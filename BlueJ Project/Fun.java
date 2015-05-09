@@ -16,7 +16,7 @@ public class Fun
     public Fun()
     {
         // initialise instance variables
-        x = 1;
+        x = 0;
     }
 
     /**

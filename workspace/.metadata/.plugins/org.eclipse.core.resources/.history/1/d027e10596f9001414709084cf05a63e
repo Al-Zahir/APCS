@@ -1,0 +1,6 @@
+
+public class Test extends JFrame{
+	public Test(){
+		super("Chess");
+	}
+}

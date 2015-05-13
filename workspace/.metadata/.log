@@ -469,3 +469,9 @@ Binding(COMMAND+O,
 		,,true),null),
 	org.eclipse.ui.defaultAcceleratorConfiguration,
 	org.eclipse.wst.sse.ui.structuredTextEditorScope,,,system)
+
+!ENTRY org.eclipse.jdt.launching 4 4 2015-05-13 12:33:27.353
+!MESSAGE Failed to retrieve default libraries for /Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home
+
+!ENTRY org.eclipse.jdt.launching 4 4 2015-05-13 12:33:57.957
+!MESSAGE Failed to retrieve default libraries for /System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home

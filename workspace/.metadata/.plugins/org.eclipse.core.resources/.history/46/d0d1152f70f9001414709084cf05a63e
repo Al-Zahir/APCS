@@ -1,0 +1,20 @@
+
+public class Board {
+	private Piece[][] board;
+	private Team turn;
+	
+	public Board(int rows, int cols){
+		board = new Piece[rows][cols];
+	}
+	
+	public void nextTurn(){
+		if(turn == Team.WHITE)
+			turn = Team.BLACK;
+		else
+			turn = Team.WHITE;
+	}
+	
+	public void select(){
+		
+	}
+}

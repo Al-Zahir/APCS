@@ -1,0 +1,50 @@
+import java.util.ArrayList;
+
+public class Piece {
+	private Type type;
+	private ArrayList<Location> moveLoc;
+	private Team color;
+	private boolean isValid;
+	private boolean isSelected;
+	
+	public Piece(Type t, Team c){
+		type = t;
+		color = c;
+		moveLoc = new ArrayList<Location>();
+		isValid = type == Type.BLANK;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public ArrayList<Location> getMoveLoc() {
+		return moveLoc;
+	}
+
+	public void addMoveLoc(Location moveLoc) {
+		this.moveLoc.add(moveLoc);
+	}
+
+	public Team getColor() {
+		return color;
+	}
+
+	public void setColor(Team color) {
+		this.color = color;
+	}
+
+	public boolean isValid() {
+		return isValid;
+	}
+
+	public void setValid(boolean isValid) {
+		this.isValid = isValid;
+	}
+	
+	
+}

@@ -1,0 +1,14 @@
+
+public class Board {
+	private Piece[][] board;
+	private String turn;
+	
+	public Board(int rows, int cols){
+		board = new Piece[rows][cols];
+	}
+	
+	public void setTurn(Team t){
+		
+	}
+	
+}

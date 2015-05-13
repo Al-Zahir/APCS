@@ -1,0 +1,7 @@
+public enum Type {
+	BLANK, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING
+}
+
+public enum Team{
+	WHITE, BLACK
+}

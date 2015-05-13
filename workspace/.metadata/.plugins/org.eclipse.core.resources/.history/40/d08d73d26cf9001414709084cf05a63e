@@ -1,0 +1,6 @@
+import Board.Type;
+
+public class Piece {
+	private Type type;
+	private ArrayList<Location> moveLoc;
+}

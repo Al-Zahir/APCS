@@ -1,0 +1,13 @@
+
+public class Board {
+	private enum Type{
+		PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING
+	}
+	
+	private Piece[][] board;
+	
+	public Board(int rows, int cols){
+		
+	}
+	
+}

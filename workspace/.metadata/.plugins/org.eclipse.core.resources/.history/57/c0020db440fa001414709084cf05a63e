@@ -1,0 +1,70 @@
+package com.Zeditude.APCompFinal;
+
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import android.util.AttributeSet;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.GridView;
+
+public class Splash extends Activity {
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.splash);
+
+		new GameView(this);
+	}
+}
+
+class GameView extends View {
+
+	Context context;
+	Board board;
+
+	public GameView(Context context) {
+		super(context);
+		this.context = context;
+		// TODO Auto-generated constructor stub
+
+		initilize();
+	}
+
+	public GameView(Context context, AttributeSet attrs, int defStyleAttr,
+			int defStyleRes) {
+		super(context, attrs, defStyleAttr, defStyleRes);
+		this.context = context;
+		// TODO Auto-generated constructor stub
+
+		initilize();
+	}
+
+	public GameView(Context context, AttributeSet attrs, int defStyleAttr) {
+		super(context, attrs, defStyleAttr);
+		this.context = context;
+		// TODO Auto-generated constructor stub
+
+		initilize();
+	}
+
+	public GameView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		this.context = context;
+		// TODO Auto-generated constructor stub
+
+		initilize();
+	}
+
+	public void initilize() {
+		board = new Board(context, 8, 8);
+		
+		GridView gv = new GridView(context);
+		gv.setNumColumns(8);
+		gv.setGravity(Gravity.CENTER);
+		
+		String[] pieces = new String[64];
+	}
+
+}

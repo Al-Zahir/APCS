@@ -1,4 +1,6 @@
 package com.Zeditude.APCompFinal;
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.widget.Toast;
 
@@ -20,7 +22,39 @@ public class Board {
 			board[6][c] = new Piece(Type.PAWN, Team.WHITE);
 		}
 		
+		board[0][0] = new Piece(Type.ROOK, Team.BLACK);
+		board[0][7] = new Piece(Type.ROOK, Team.BLACK);
+		board[7][0] = new Piece(Type.ROOK, Team.WHITE);
+		board[7][7] = new Piece(Type.ROOK, Team.WHITE);
+		
+		board[0][1] = new Piece(Type.KNIGHT, Team.BLACK);
+		board[0][6] = new Piece(Type.KNIGHT, Team.BLACK);
+		board[7][1] = new Piece(Type.KNIGHT, Team.WHITE);
+		board[7][6] = new Piece(Type.KNIGHT, Team.WHITE);
+		
+		board[0][2] = new Piece(Type.BISHOP, Team.BLACK);
+		board[0][5] = new Piece(Type.BISHOP, Team.BLACK);
+		board[7][2] = new Piece(Type.BISHOP, Team.WHITE);
+		board[7][5] = new Piece(Type.BISHOP, Team.WHITE);
+		
+		board[0][3] = new Piece(Type.QUEEN, Team.BLACK);
+		board[0][4] = new Piece(Type.KING, Team.BLACK);
+		board[7][3] = new Piece(Type.QUEEN, Team.WHITE);
+		board[7][4] = new Piece(Type.KING, Team.WHITE);
+		
 		setLocations();
+	}
+	
+	public int getRow(){
+		return board.length;
+	}
+	
+	public int getCol(){
+		return board[0].length;
+	}
+	
+	public Piece getPiece(int r, int c){
+		return board[r][c];
 	}
 
 	public void nextTurn() {
@@ -48,23 +82,28 @@ public class Board {
 			for(int c = 0; c < board[r].length; c++)
 				board[r][c].setProtected(false, Team.BLANK);
 		
-		for (int r = 0; r < board.length; r++) {
-			for (int c = 0; c < board[r].length; c++) {
-				Piece p = board[r][c];
-				
-				if (p.getType() != Type.BLANK)
-					setPieceLocation(p, r, c);
-			}
-		}
+		ArrayList<Piece> kings = new ArrayList<Piece>();
+		ArrayList<Integer> row = new ArrayList<Integer>();
+		ArrayList<Integer> col = new ArrayList<Integer>();
 		
 		for (int r = 0; r < board.length; r++) {
 			for (int c = 0; c < board[r].length; c++) {
 				Piece p = board[r][c];
 				
-				if (p.getType() != Type.BLANK)
+				if (p.getType() != Type.BLANK && p.getType() != Type.KING)
 					setPieceLocation(p, r, c);
+				else if(p.getType() == Type.KING){
+					kings.add(p);
+					row.add(r);
+					col.add(c);
+				}
+					
 			}
 		}
+		
+		for(int i = 0; i < kings.size(); i++)
+			setPieceLocation(kings.get(i), row.get(i), col.get(i));
+		
 	}
 
 	public void setPieceLocation(Piece p, int r, int c) {

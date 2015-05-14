@@ -1,3 +1,6 @@
+PREF_VM_INSTALL_SYSTEM_PROPERTY.org.eclipse.jdt.internal.launching.macosx.MacOSXType.com.apple.javajdk16.java.specification.name=Java Platform API Specification
+PREF_VM_INSTALL_SYSTEM_PROPERTY.org.eclipse.jdt.internal.launching.macosx.MacOSXType.com.apple.javajdk16.java.specification.version=1.6
+PREF_VM_INSTALL_SYSTEM_PROPERTY.org.eclipse.jdt.internal.launching.macosx.MacOSXType.com.apple.javajdk16.java.version=1.6.0_65
 PREF_VM_INSTALL_SYSTEM_PROPERTY.org.eclipse.jdt.internal.launching.macosx.MacOSXType.com.oracle.java.8u25.jdk.java.specification.name=Java Platform API Specification
 PREF_VM_INSTALL_SYSTEM_PROPERTY.org.eclipse.jdt.internal.launching.macosx.MacOSXType.com.oracle.java.8u25.jdk.java.specification.version=1.8
 PREF_VM_INSTALL_SYSTEM_PROPERTY.org.eclipse.jdt.internal.launching.macosx.MacOSXType.com.oracle.java.8u25.jdk.java.version=1.8.0_25

@@ -1,0 +1,26 @@
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import android.view.View;
+
+
+public class Spalsh extends Activity{
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		
+		GameView gv = new GameView(this);
+	}
+	
+}
+
+class GameView extends View{
+
+	public GameView(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stub
+	}
+	
+}

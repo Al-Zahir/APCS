@@ -1,0 +1,8 @@
+
+public class Spalsh {
+
+}
+
+class GameView extends View{
+	
+}

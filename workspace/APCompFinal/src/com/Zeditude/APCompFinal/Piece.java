@@ -80,8 +80,14 @@ public class Piece {
 		this.hasMoved = hasMoved;
 	}
 	
-	public boolean isProtected(){
-		return isProtected;
+	public boolean isProtected(Team c){
+		boolean flag = false;
+		
+		for(Team t : protectedColors)
+			if(t != c)
+				flag = true;
+		
+		return isProtected && flag;
 	}
 	
 	public void setProtected(boolean b, Team t){

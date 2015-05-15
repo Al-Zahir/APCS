@@ -65,22 +65,48 @@ public class Board {
 	}
 
 	public void select(int r, int c) {
-		for(int i = 0; i < board.length; i++)
-			for(int j = 0; j < board[i].length; j++)
+		int oldR = -1, oldC = -1;
+		
+		for(int i = 0; i < board.length; i++){
+			for(int j = 0; j < board[i].length; j++){
+				if(board[i][j].isSelected()){
+					oldR = i;
+					oldC = j;
+				}
+				
 				board[i][j].setSelected(false);
-		
-		Piece s = board[r][c];
-		
-		if(s.getType() != Type.BLANK){
-			s.setSelected(true);
-			Toast.makeText(context, "" + s.getMoveLoc(), Toast.LENGTH_LONG).show();
+			}
 		}
+		
+		Piece s;
+		if(oldR == -1 && oldC == -1)
+			s = board[r][c];
+		else
+			s = board[oldR][oldC];
+		
+		if(r == oldR && c == oldC)
+			board[r][c].setSelected(false);
+		else if(oldR == -1 && oldC == -1){
+			if(s.getType() != Type.BLANK){
+				s.setSelected(true);
+				Toast.makeText(context, "" + s.getMoveLoc(), Toast.LENGTH_LONG).show();
+			}
+		}else if(s.canMoveTo(r, c)){
+			s.setHasMoved(true);
+			board[r][c] = s;
+			board[oldR][oldC] = new Piece();
+			setLocations();
+		}else
+			board[r][c].setSelected(false);
 	}
 
 	public void setLocations() {
-		for(int r = 0; r < board.length; r++)
-			for(int c = 0; c < board[r].length; c++)
+		for(int r = 0; r < board.length; r++){
+			for(int c = 0; c < board[r].length; c++){
 				board[r][c].setProtected(false, Team.BLANK);
+				board[r][c].removeLocations();
+			}
+		}
 		
 		ArrayList<Piece> kings = new ArrayList<Piece>();
 		ArrayList<Integer> row = new ArrayList<Integer>();
@@ -177,7 +203,70 @@ public class Board {
 	}
 
 	public void setKnightLoc(Piece p, int r, int c) {
-
+		if(r + 1 < board.length){
+			if(c + 2 < board[r].length){
+				if(board[r + 1][c + 2].getColor() != p.getColor())
+					p.addMoveLoc(new Location(r + 1, c + 2));
+				
+				board[r + 1][c + 2].setProtected(true, p.getColor());
+			}
+			
+			if(c - 2 >= 0){
+				if(board[r + 1][c - 2].getColor() != p.getColor())
+					p.addMoveLoc(new Location(r + 1, c - 2));
+				
+				board[r + 1][c - 2].setProtected(true, p.getColor());
+			}
+			
+			
+			if(r + 2 < board.length){
+				if(c + 1 < board[r].length){
+					if(board[r + 2][c + 1].getColor() != p.getColor())
+						p.addMoveLoc(new Location(r + 2, c + 1));
+					
+					board[r + 2][c + 1].setProtected(true, p.getColor());
+				}
+				
+				if(c - 1 >= 0){
+					if(board[r + 2][c - 1].getColor() != p.getColor())
+						p.addMoveLoc(new Location(r + 2, c - 1));
+					
+					board[r + 2][c - 1].setProtected(true, p.getColor());
+				}
+			}
+		}
+		
+		if(r - 1 >= 0){
+			if(c + 2 < board[r].length){
+				if(board[r - 1][c + 2].getColor() != p.getColor())
+					p.addMoveLoc(new Location(r - 1, c + 2));
+				
+				board[r - 1][c + 2].setProtected(true, p.getColor());
+			}
+			
+			if(c - 2 >= 0){
+				if(board[r - 1][c - 2].getColor() != p.getColor())
+					p.addMoveLoc(new Location(r - 1, c - 2));
+				
+				board[r - 1][c - 2].setProtected(true, p.getColor());
+			}
+			
+			if(r - 2 >= 0){
+				if(c + 1 < board[r].length){
+					if(board[r - 2][c + 1].getColor() != p.getColor())
+						p.addMoveLoc(new Location(r - 2, c + 1));
+					
+					board[r - 2][c + 1].setProtected(true, p.getColor());
+				}
+				
+				if(c - 1 >= 0){
+					if(board[r - 2][c - 1].getColor() != p.getColor())
+						p.addMoveLoc(new Location(r - 2, c - 1));
+					
+					board[r - 2][c - 1].setProtected(true, p.getColor());
+				}
+			}
+		}
 	}
 
 	public void setBishopLoc(Piece p, int r, int c) {

@@ -45,6 +45,16 @@ public class Piece {
 	public void addMoveLoc(Location moveLoc) {
 		this.moveLoc.add(moveLoc);
 	}
+	
+	public boolean canMoveTo(int r, int c){
+		boolean flag = false;
+		
+		for(Location l : moveLoc)
+			if(l.getRow() == r && l.getCol() == c)
+				flag = true;
+		
+		return flag;
+	}
 
 	public Team getColor() {
 		return color;
@@ -80,5 +90,9 @@ public class Piece {
 		
 		if(!b)
 			protectedColors = new ArrayList<Team>();
+	}
+	
+	public void removeLocations(){
+		moveLoc = new ArrayList<Location>();
 	}
 }

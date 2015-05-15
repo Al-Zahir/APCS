@@ -69,7 +69,10 @@ class GameView extends GridView {
 
 	public void initilize() {
 		board = new Board(context, 8, 8);
-		
+		reDraw();
+	}
+	
+	public void reDraw(){
 		String[] pieces = new String[64];
 		int index = 0;
 		
@@ -104,6 +107,8 @@ class GameView extends GridView {
 					break;
 				}
 				
+				if(p.isSelected())
+					s += "S";
 				pieces[index] = s;
 				index++;
 			}
@@ -118,6 +123,7 @@ class GameView extends GridView {
 			public void onItemClick(AdapterView<?> parent, View v,
 				int position, long id) {
 				board.select((int)(position / 8), (int)(position % 8));
+				reDraw();
 			}
 		});
 	}

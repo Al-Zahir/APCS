@@ -2,6 +2,8 @@ package com.Zeditude.APCompFinal;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -73,48 +75,72 @@ class GameView extends GridView {
 	}
 	
 	public void reDraw(){
-		String[] pieces = new String[64];
+		//String[] pieces = new String[64];
+		Bitmap[] pieces = new Bitmap[64];
 		int index = 0;
 		
 		for(int r = 0; r < board.getRow(); r++){
 			for(int c = 0; c < board.getCol(); c++){
 				Piece p = board.getPiece(r, c);
-				String s = "Y";
+				
+				Team color = p.getColor();
+				Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.blank);
 				
 				switch (p.getType()) {
 				case PAWN:
-					s = "P";
+					if(color == Team.WHITE)
+						b = BitmapFactory.decodeResource(getResources(), R.drawable.whitepawn);
+					else
+						b = BitmapFactory.decodeResource(getResources(), R.drawable.blackpawn);
 					break;
 
 				case KNIGHT:
-					s = "K";
+					if(color == Team.WHITE)
+						b = BitmapFactory.decodeResource(getResources(), R.drawable.whiteknight);
+					else
+						b = BitmapFactory.decodeResource(getResources(), R.drawable.blackknight);
 					break;
 
 				case BISHOP:
-					s = "B";
+					if(color == Team.WHITE)
+						b = BitmapFactory.decodeResource(getResources(), R.drawable.whitebishop);
+					else
+						b = BitmapFactory.decodeResource(getResources(), R.drawable.blackbishop);
 					break;
 
 				case ROOK:
-					s = "R";
+					if(color == Team.WHITE)
+						b = BitmapFactory.decodeResource(getResources(), R.drawable.whiterook);
+					else
+						b = BitmapFactory.decodeResource(getResources(), R.drawable.blackrook);
 					break;
 
 				case QUEEN:
-					s = "Q";
+					if(color == Team.WHITE)
+						b = BitmapFactory.decodeResource(getResources(), R.drawable.whitequeen);
+					else
+						b = BitmapFactory.decodeResource(getResources(), R.drawable.blackqueen);
 					break;
 
 				case KING:
-					s = "M";
+					if(color == Team.WHITE)
+						b = BitmapFactory.decodeResource(getResources(), R.drawable.whiteking);
+					else
+						b = BitmapFactory.decodeResource(getResources(), R.drawable.blackking);
 					break;
 				}
 				
-				if(p.isSelected())
-					s += "S";
-				pieces[index] = s;
+				//if(p.isSelected())
+					//s += "S";
+				pieces[index] = b;
 				index++;
 			}
 		}
 		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, 
+		//ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, 
+				//android.R.layout.simple_list_item_1, pieces);
+		
+		ArrayAdapter<Bitmap> adapter = new ArrayAdapter<Bitmap>(context, 
 				android.R.layout.simple_list_item_1, pieces);
  
 		this.setAdapter(adapter);

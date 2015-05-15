@@ -162,42 +162,48 @@ public class Board {
 
 	public void setPawnLoc(Piece p, int r, int c) {
 		if (p.getColor() == Team.WHITE) {
-			p.addMoveLoc(new Location(r - 1, c));
+			if(r - 1 >= 0 && board[r - 1][c].getType() == Type.BLANK){
+				p.addMoveLoc(new Location(r - 1, c));
 
-			if (!p.hasMoved())
-				p.addMoveLoc(new Location(r - 2, c));
+				if (!p.hasMoved())
+					if(r - 2 >= 0 && board[r - 2][c].getType() == Type.BLANK)
+						p.addMoveLoc(new Location(r - 2, c));
+						
+				if (c + 1 < board[r].length){
+					if (board[r - 1][c + 1].getColor() == Team.BLACK)
+						p.addMoveLoc(new Location(r - 1, c + 1));
+					
+					board[r - 1][c + 1].setProtected(true, p.getColor());
+				}
 
-			if (c + 1 < board[r].length){
-				if (board[r - 1][c + 1].getColor() == Team.BLACK)
-					p.addMoveLoc(new Location(r - 1, c + 1));
-				
-				board[r - 1][c + 1].setProtected(true, p.getColor());
-			}
-
-			if (c - 1 > 0){
-				if (board[r - 1][c - 1].getColor() == Team.BLACK)
-					p.addMoveLoc(new Location(r - 1, c - 1));
-				
-				board[r - 1][c - 1].setProtected(true, p.getColor());
+				if (c - 1 > 0){
+					if (board[r - 1][c - 1].getColor() == Team.BLACK)
+						p.addMoveLoc(new Location(r - 1, c - 1));
+					
+					board[r - 1][c - 1].setProtected(true, p.getColor());
+				}
 			}
 		} else {
-			p.addMoveLoc(new Location(r + 1, c));
+			if(r + 1 >= 0 && board[r + 1][c].getType() == Type.BLANK){
+				p.addMoveLoc(new Location(r + 1, c));
 
-			if (!p.hasMoved())
-				p.addMoveLoc(new Location(r + 2, c));
-
-			if (c + 1 < board.length){
-				if (board[r + 1][c + 1].getColor() == Team.WHITE)
-					p.addMoveLoc(new Location(r + 1, c + 1));
+				if (!p.hasMoved())
+					if(r + 2 >= 0 && board[r + 2][c].getType() == Type.BLANK)
+						p.addMoveLoc(new Location(r + 2, c));
 				
-				board[r + 1][c + 1].setProtected(true, p.getColor());
-			}
+				if (c + 1 < board.length){
+					if (board[r + 1][c + 1].getColor() == Team.WHITE)
+						p.addMoveLoc(new Location(r + 1, c + 1));
+					
+					board[r + 1][c + 1].setProtected(true, p.getColor());
+				}
 
-			if (c - 1 > 0){
-				if (board[r + 1][c - 1].getColor() == Team.WHITE)
-					p.addMoveLoc(new Location(r + 1, c - 1));
-			
-				board[r + 1][c - 1].setProtected(true, p.getColor());
+				if (c - 1 > 0){
+					if (board[r + 1][c - 1].getColor() == Team.WHITE)
+						p.addMoveLoc(new Location(r + 1, c - 1));
+				
+					board[r + 1][c - 1].setProtected(true, p.getColor());
+				}
 			}
 		}
 	}

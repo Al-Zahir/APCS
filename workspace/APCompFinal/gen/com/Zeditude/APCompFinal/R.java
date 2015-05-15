@@ -20,18 +20,25 @@ public final class R {
         public static final int blank=0x7f020006;
         public static final int chess_symbols=0x7f020007;
         public static final int ic_launcher=0x7f020008;
-        public static final int whitebishop=0x7f020009;
-        public static final int whiteking=0x7f02000a;
-        public static final int whiteknight=0x7f02000b;
-        public static final int whitepawn=0x7f02000c;
-        public static final int whitequeen=0x7f02000d;
-        public static final int whiterook=0x7f02000e;
+        public static final int locate=0x7f020009;
+        public static final int selected=0x7f02000a;
+        public static final int whitebishop=0x7f02000b;
+        public static final int whiteking=0x7f02000c;
+        public static final int whiteknight=0x7f02000d;
+        public static final int whitepawn=0x7f02000e;
+        public static final int whitequeen=0x7f02000f;
+        public static final int whiterook=0x7f020010;
     }
     public static final class id {
-        public static final int splashLayout=0x7f060000;
+        public static final int gridView1=0x7f060002;
+        public static final int grid_item_image=0x7f060001;
+        public static final int grid_item_image2=0x7f060000;
+        public static final int splashLayout=0x7f060003;
     }
     public static final class layout {
-        public static final int splash=0x7f030000;
+        public static final int adapter=0x7f030000;
+        public static final int board=0x7f030001;
+        public static final int splash=0x7f030002;
     }
     public static final class string {
         public static final int app_name=0x7f040000;

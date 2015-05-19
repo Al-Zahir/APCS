@@ -1,7 +1,7 @@
 package com.Zeditude.APCompFinal;
 import java.util.ArrayList;
 
-public class Piece {
+public class Piece implements Cloneable{
 	private Type type;
 	private ArrayList<Location> moveLoc;
 	private Team color;
@@ -28,6 +28,26 @@ public class Piece {
 		hasMoved = false;
 		isProtected = false;
 		protectedColors = new ArrayList<Team>();
+	}
+	
+	public Piece(Piece p){
+		type = p.getType();
+		color = p.getColor();
+		moveLoc = p.getMoveLoc();
+		isSelected = p.isSelected();
+		hasMoved = p.hasMoved();
+		
+		Team opColor = Team.BLACK;
+		
+		if(color == Team.BLACK)
+			opColor = Team.WHITE;
+		
+		if(p.isProtected(color) || p.isProtected(opColor))
+			isProtected = true;
+		else
+			isProtected = false;
+		
+		protectedColors = p.getProtectedColors();
 	}
 
 	public Type getType() {
@@ -84,7 +104,7 @@ public class Piece {
 		boolean flag = false;
 		
 		for(Team t : protectedColors)
-			if(t != c)
+			if(t == c)
 				flag = true;
 		
 		return isProtected && flag;
@@ -98,7 +118,15 @@ public class Piece {
 			protectedColors = new ArrayList<Team>();
 	}
 	
+	public ArrayList<Team> getProtectedColors(){
+		return protectedColors;
+	}
+	
 	public void removeLocations(){
 		moveLoc = new ArrayList<Location>();
+	}
+	
+	public String toString(){
+		return color + " " + type;
 	}
 }

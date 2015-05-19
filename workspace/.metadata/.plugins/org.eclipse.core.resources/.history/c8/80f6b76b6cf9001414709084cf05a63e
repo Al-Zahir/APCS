@@ -1,8 +1,0 @@
-
-public class Piece {
-	private enum Type{
-		PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING
-	}
-	
-	Type type;
-}

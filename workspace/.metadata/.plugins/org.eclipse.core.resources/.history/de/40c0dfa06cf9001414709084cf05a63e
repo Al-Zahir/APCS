@@ -1,7 +1,0 @@
-
-public class Board {
-	private enum Type{
-		PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING
-	}
-	
-}

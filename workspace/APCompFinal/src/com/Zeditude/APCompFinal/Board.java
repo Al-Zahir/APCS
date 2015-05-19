@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.widget.Toast;
 
-public class Board {
+public class Board implements Cloneable {
 	private Context context;
 	private Piece[][] board;
 	private Team turn;
@@ -43,7 +43,16 @@ public class Board {
 		board[7][3] = new Piece(Type.QUEEN, Team.WHITE);
 		board[7][4] = new Piece(Type.KING, Team.WHITE);
 
+		turn = Team.WHITE;
+		
 		setLocations();
+		setProtections();
+	}
+
+	public Board(Piece[][] b, Team t) {
+		this.board = b;
+		this.turn = t;
+		setProtections();
 	}
 
 	public int getRow() {
@@ -54,8 +63,59 @@ public class Board {
 		return board[0].length;
 	}
 
+	public Piece[][] getBoard() {
+		return board;
+	}
+
 	public Piece getPiece(int r, int c) {
 		return board[r][c];
+	}
+
+	public boolean isValid(int row1, int col1, int row2, int col2) {
+		Piece[][] board2 = new Piece[board.length][board[0].length];
+
+		for (int r = 0; r < board.length; r++)
+			for (int c = 0; c < board[r].length; c++)
+				board2[r][c] = new Piece(board[r][c]);
+
+		Piece p = board2[row1][col1];
+		board2[row2][col2] = p;
+		board2[row1][col1] = new Piece();
+
+		
+		Board b2 = new Board(board2, turn);
+		return !b2.isInCheck(p.getColor());
+	}
+
+	public boolean isInCheck(Team t) {
+		Piece king = null;
+
+		for (int r = 0; r < board.length; r++)
+			for (int c = 0; c < board[r].length; c++)
+				if (board[r][c].getType() == Type.KING
+						&& board[r][c].getColor() == t)
+					king = board[r][c];
+		Team op = king.getColor();
+
+		if (op == Team.WHITE)
+			op = Team.BLACK;
+		else
+			op = Team.WHITE;
+
+		return king.isProtected(op);
+	}
+	
+	public boolean isMate(Team t){
+		boolean flag = true;
+		
+		for (int r = 0; r < board.length; r++)
+			for (int c = 0; c < board[r].length; c++)
+				if(board[r][c].getColor() == t)
+					if(board[r][c].getMoveLoc().size() != 0)
+						flag = false;
+		
+		return flag;
+				
 	}
 
 	public void nextTurn() {
@@ -88,27 +148,47 @@ public class Board {
 		if (r == oldR && c == oldC)
 			board[r][c].setSelected(false);
 		else if (oldR == -1 && oldC == -1) {
-			if (s.getType() != Type.BLANK) {
+			if (s.getType() != Type.BLANK)// && s.getColor() == turn) {
 				s.setSelected(true);
-				Toast.makeText(context, "" + s.getMoveLoc(), Toast.LENGTH_LONG)
-						.show();
-			}
-		} else if (s.canMoveTo(r, c)) {
-			s.setHasMoved(true);
-			board[r][c] = s;
-			board[oldR][oldC] = new Piece();
-			setLocations();
-		} else
+		} else if (s.canMoveTo(r, c))
+			movePiece(s, oldR, oldC, r, c);
+		else if(board[r][c].getType() != Type.BLANK)//&& board[r][c].getColor() == turn)
+			board[r][c].setSelected(true);
+		else
 			board[r][c].setSelected(false);
+	}
+	
+	public void movePiece(Piece s, int oldR, int oldC, int r, int c){
+		s.setHasMoved(true);
+		board[r][c] = s;
+		board[oldR][oldC] = new Piece();
+		
+		setLocations();
+		setProtections();
+		
+		Team op = s.getColor();
+		if(op == Team.WHITE)
+			op = Team.BLACK;
+		else
+			op = Team.WHITE;
+		
+		if(isInCheck(op)){
+			if(isMate(op))
+				Toast.makeText(context, "Check mate " + s.getColor() + " wins", Toast.LENGTH_LONG).show();
+			else
+				Toast.makeText(context, op + " is in check", Toast.LENGTH_LONG).show();
+		}
+		
+		setLocations();
+		setProtections();
+		
+		nextTurn();
 	}
 
 	public void setLocations() {
-		for (int r = 0; r < board.length; r++) {
-			for (int c = 0; c < board[r].length; c++) {
-				board[r][c].setProtected(false, Team.BLANK);
+		for (int r = 0; r < board.length; r++)
+			for (int c = 0; c < board[r].length; c++) 
 				board[r][c].removeLocations();
-			}
-		}
 
 		ArrayList<Piece> kings = new ArrayList<Piece>();
 		ArrayList<Integer> row = new ArrayList<Integer>();
@@ -133,7 +213,35 @@ public class Board {
 			setPieceLocation(kings.get(i), row.get(i), col.get(i));
 
 	}
+	
+	public void setProtections(){
+		for (int r = 0; r < board.length; r++)
+			for (int c = 0; c < board[r].length; c++) 
+				board[r][c].setProtected(false, Team.BLANK);
 
+		ArrayList<Piece> kings = new ArrayList<Piece>();
+		ArrayList<Integer> row = new ArrayList<Integer>();
+		ArrayList<Integer> col = new ArrayList<Integer>();
+
+		for (int r = 0; r < board.length; r++) {
+			for (int c = 0; c < board[r].length; c++) {
+				Piece p = board[r][c];
+
+				if (p.getType() != Type.BLANK && p.getType() != Type.KING)
+					setPieceProtection(p, r, c);
+				else if (p.getType() == Type.KING) {
+					kings.add(p);
+					row.add(r);
+					col.add(c);
+				}
+
+			}
+		}
+
+		for (int i = 0; i < kings.size(); i++)
+			setPieceProtection(kings.get(i), row.get(i), col.get(i));
+	}
+	
 	public void setPieceLocation(Piece p, int r, int c) {
 		switch (p.getType()) {
 		case PAWN:
@@ -162,122 +270,300 @@ public class Board {
 		}
 	}
 
+	public void setPieceProtection(Piece p, int r, int c) {
+		switch (p.getType()) {
+		case PAWN:
+			setPawnProtect(p, r, c);
+			break;
+
+		case KNIGHT:
+			setKnightProtect(p, r, c);
+			break;
+
+		case BISHOP:
+			setBishopProtect(p, r, c);
+			break;
+
+		case ROOK:
+			setRookProtect(p, r, c);
+			break;
+
+		case QUEEN:
+			setQueenProtect(p, r, c);
+			break;
+
+		case KING:
+			setKingProtect(p, r, c);
+			break;
+		}
+	}
+
+	public void setPawnProtect(Piece p, int r, int c) {
+		if (p.getColor() == Team.WHITE) {
+			if (r - 1 >= 0) {
+				if (c + 1 < board[r].length)
+					board[r - 1][c + 1].setProtected(true, p.getColor());
+				
+				if (c - 1 >= 0) 
+					board[r - 1][c - 1].setProtected(true, p.getColor());
+			}
+		}else{
+			if (r + 1 < board.length) {
+				if (c + 1 < board.length)
+					board[r + 1][c + 1].setProtected(true, p.getColor());
+				if (c - 1 >= 0)
+					board[r + 1][c - 1].setProtected(true, p.getColor());
+			}
+		}
+	}
+
+	public void setKnightProtect(Piece p, int r, int c) {
+		if (r + 1 < board.length) {
+			if (c + 2 < board[r].length)
+				board[r + 1][c + 2].setProtected(true, p.getColor());
+
+			if (c - 2 >= 0)
+				board[r + 1][c - 2].setProtected(true, p.getColor());
+
+			if (r + 2 < board.length) {
+				if (c + 1 < board[r].length)
+					board[r + 2][c + 1].setProtected(true, p.getColor());
+
+				if (c - 1 >= 0)
+					board[r + 2][c - 1].setProtected(true, p.getColor());
+			}
+		}
+
+		if (r - 1 >= 0) {
+			if (c + 2 < board[r].length)
+				board[r - 1][c + 2].setProtected(true, p.getColor());
+
+			if (c - 2 >= 0)
+				board[r - 1][c - 2].setProtected(true, p.getColor());
+
+			if (r - 2 >= 0) {
+				if (c + 1 < board[r].length) 
+					board[r - 2][c + 1].setProtected(true, p.getColor());
+
+				if (c - 1 >= 0)
+					board[r - 2][c - 1].setProtected(true, p.getColor());
+			}
+		}
+	}
+
+	public void setBishopProtect(Piece p, int r, int c) {
+		int tempR = r + 1, tempC = c + 1;
+		while (tempR < board.length && tempC < board[tempR].length
+				&& board[tempR][tempC].getType() == Type.BLANK) {
+			board[tempR][tempC].setProtected(true, p.getColor());
+			tempR++;
+			tempC++;
+		}
+
+		if (tempR < board.length && tempC < board[tempR].length) 
+			board[tempR][tempC].setProtected(true, p.getColor());
+
+		tempR = r - 1;
+		tempC = c + 1;
+		while (tempR >= 0 && tempC < board[tempR].length
+				&& board[tempR][tempC].getType() == Type.BLANK) {
+			board[tempR][tempC].setProtected(true, p.getColor());
+			tempR--;
+			tempC++;
+		}
+
+		if (tempR >= 0 && tempC < board[tempR].length) 
+			board[tempR][tempC].setProtected(true, p.getColor());
+
+		tempR = r + 1;
+		tempC = c - 1;
+		while (tempR < board.length && tempC >= 0
+				&& board[tempR][tempC].getType() == Type.BLANK) {
+			board[tempR][tempC].setProtected(true, p.getColor());
+			tempR++;
+			tempC--;
+		}
+
+		if (tempR < board.length && tempC >= 0) 
+			board[tempR][tempC].setProtected(true, p.getColor());
+
+		tempR = r - 1;
+		tempC = c - 1;
+		while (tempR >= 0 && tempC >= 0
+				&& board[tempR][tempC].getType() == Type.BLANK) {
+			board[tempR][tempC].setProtected(true, p.getColor());
+			tempR--;
+			tempC--;
+		}
+
+		if (tempR >= 0 && tempC >= 0)
+			board[tempR][tempC].setProtected(true, p.getColor());
+	}
+
+	public void setRookProtect(Piece p, int r, int c) {
+		int tempR = r + 1, tempC = c;
+		while (tempR < board.length
+				&& board[tempR][tempC].getType() == Type.BLANK) {
+			board[tempR][tempC].setProtected(true, p.getColor());
+			tempR++;
+		}
+
+		if (tempR < board.length)
+			board[tempR][tempC].setProtected(true, p.getColor());
+		
+		tempR = r - 1;
+		tempC = c;
+		while (tempR >= 0 && board[tempR][tempC].getType() == Type.BLANK) {
+			board[tempR][tempC].setProtected(true, p.getColor());
+			tempR--;
+		}
+
+		if (tempR >= 0)
+			board[tempR][tempC].setProtected(true, p.getColor());
+
+		tempR = r;
+		tempC = c + 1;
+		while (tempC < board[tempR].length
+				&& board[tempR][tempC].getType() == Type.BLANK) {
+			board[tempR][tempC].setProtected(true, p.getColor());
+			tempC++;
+		}
+
+		if (tempC < board[tempR].length)
+			board[tempR][tempC].setProtected(true, p.getColor());
+
+		tempR = r;
+		tempC = c - 1;
+		while (tempC >= 0 && board[tempR][tempC].getType() == Type.BLANK) {
+			board[tempR][tempC].setProtected(true, p.getColor());
+			tempC--;
+		}
+
+		if (tempC >= 0)
+			board[tempR][tempC].setProtected(true, p.getColor());
+	}
+
+	public void setQueenProtect(Piece p, int r, int c) {
+		setBishopProtect(p, r, c);
+		setRookProtect(p, r, c);
+	}
+
+	public void setKingProtect(Piece p, int r, int c) {
+		if (r + 1 < board.length) {
+			board[r + 1][c].setProtected(true, p.getColor());
+
+			if (c + 1 < board[r].length)
+				board[r + 1][c + 1].setProtected(true, p.getColor());
+
+			if (c - 1 >= 0)
+				board[r + 1][c - 1].setProtected(true, p.getColor());
+		}
+
+		if (c + 1 < board[r].length)
+			board[r][c + 1].setProtected(true, p.getColor());
+
+		if (c - 1 >= 0)
+			board[r][c - 1].setProtected(true, p.getColor());
+
+		if (r - 1 >= 0) {
+			board[r - 1][c].setProtected(true, p.getColor());
+
+			if (c + 1 < board[r].length)
+				board[r - 1][c + 1].setProtected(true, p.getColor());
+
+			if (c - 1 >= 0) 
+				board[r - 1][c - 1].setProtected(true, p.getColor());
+		}
+	}
+
 	public void setPawnLoc(Piece p, int r, int c) {
 		if (p.getColor() == Team.WHITE) {
 			if (r - 1 >= 0) {
-				if (board[r - 1][c].getType() == Type.BLANK) {
+				if (board[r - 1][c].getType() == Type.BLANK
+						&& isValid(r, c, r - 1, c)) {
 					p.addMoveLoc(new Location(r - 1, c));
 
 					if (!p.hasMoved())
 						if (r - 2 >= 0
-								&& board[r - 2][c].getType() == Type.BLANK)
+								&& board[r - 2][c].getType() == Type.BLANK
+								&& isValid(r, c, r - 2, c))
 							p.addMoveLoc(new Location(r - 2, c));
 				}
 
-				if (c + 1 < board[r].length) {
-					if (board[r - 1][c + 1].getColor() == Team.BLACK)
+				if (c + 1 < board[r].length)
+					if (board[r - 1][c + 1].getColor() == Team.BLACK
+							&& isValid(r, c, r - 1, c + 1))
 						p.addMoveLoc(new Location(r - 1, c + 1));
 
-					board[r - 1][c + 1].setProtected(true, p.getColor());
-				}
-
-				if (c - 1 >= 0) {
-					if (board[r - 1][c - 1].getColor() == Team.BLACK)
+				if (c - 1 >= 0)
+					if (board[r - 1][c - 1].getColor() == Team.BLACK
+							&& isValid(r, c, r - 1, c - 1))
 						p.addMoveLoc(new Location(r - 1, c - 1));
-
-					board[r - 1][c - 1].setProtected(true, p.getColor());
-				}
 			}
 		} else {
 			if (r + 1 < board.length) {
-				if (board[r + 1][c].getType() == Type.BLANK) {
+				if (board[r + 1][c].getType() == Type.BLANK
+						&& isValid(r, c, r + 1, c)) {
 					p.addMoveLoc(new Location(r + 1, c));
 
 					if (!p.hasMoved())
 						if (r + 2 < board.length
-								&& board[r + 2][c].getType() == Type.BLANK)
+								&& board[r + 2][c].getType() == Type.BLANK
+								&& isValid(r, c, r + 2, c))
 							p.addMoveLoc(new Location(r + 2, c));
 				}
 
-				if (c + 1 < board.length) {
-					if (board[r + 1][c + 1].getColor() == Team.WHITE)
+				if (c + 1 < board.length)
+					if (board[r + 1][c + 1].getColor() == Team.WHITE
+							&& isValid(r, c, r + 1, c + 1))
 						p.addMoveLoc(new Location(r + 1, c + 1));
 
-					board[r + 1][c + 1].setProtected(true, p.getColor());
-				}
-
-				if (c - 1 >= 0) {
-					if (board[r + 1][c - 1].getColor() == Team.WHITE)
+				if (c - 1 >= 0)
+					if (board[r + 1][c - 1].getColor() == Team.WHITE
+							&& isValid(r, c, r + 1, c - 1))
 						p.addMoveLoc(new Location(r + 1, c - 1));
-
-					board[r + 1][c - 1].setProtected(true, p.getColor());
-				}
 			}
 		}
 	}
 
 	public void setKnightLoc(Piece p, int r, int c) {
 		if (r + 1 < board.length) {
-			if (c + 2 < board[r].length) {
-				if (board[r + 1][c + 2].getColor() != p.getColor())
+			if (c + 2 < board[r].length)
+				if (board[r + 1][c + 2].getColor() != p.getColor() && isValid(r, c, r + 1, c + 2))
 					p.addMoveLoc(new Location(r + 1, c + 2));
 
-				board[r + 1][c + 2].setProtected(true, p.getColor());
-			}
-
-			if (c - 2 >= 0) {
-				if (board[r + 1][c - 2].getColor() != p.getColor())
+			if (c - 2 >= 0)
+				if (board[r + 1][c - 2].getColor() != p.getColor() && isValid(r, c, r + 1, c - 2))
 					p.addMoveLoc(new Location(r + 1, c - 2));
 
-				board[r + 1][c - 2].setProtected(true, p.getColor());
-			}
-
 			if (r + 2 < board.length) {
-				if (c + 1 < board[r].length) {
-					if (board[r + 2][c + 1].getColor() != p.getColor())
+				if (c + 1 < board[r].length)
+					if (board[r + 2][c + 1].getColor() != p.getColor() && isValid(r, c, r + 2, c + 1))
 						p.addMoveLoc(new Location(r + 2, c + 1));
 
-					board[r + 2][c + 1].setProtected(true, p.getColor());
-				}
-
-				if (c - 1 >= 0) {
-					if (board[r + 2][c - 1].getColor() != p.getColor())
+				if (c - 1 >= 0)
+					if (board[r + 2][c - 1].getColor() != p.getColor() && isValid(r, c, r + 2, c - 1))
 						p.addMoveLoc(new Location(r + 2, c - 1));
-
-					board[r + 2][c - 1].setProtected(true, p.getColor());
-				}
 			}
 		}
 
 		if (r - 1 >= 0) {
-			if (c + 2 < board[r].length) {
-				if (board[r - 1][c + 2].getColor() != p.getColor())
+			if (c + 2 < board[r].length)
+				if (board[r - 1][c + 2].getColor() != p.getColor() && isValid(r, c, r - 1, c + 2))
 					p.addMoveLoc(new Location(r - 1, c + 2));
 
-				board[r - 1][c + 2].setProtected(true, p.getColor());
-			}
-
-			if (c - 2 >= 0) {
-				if (board[r - 1][c - 2].getColor() != p.getColor())
+			if (c - 2 >= 0)
+				if (board[r - 1][c - 2].getColor() != p.getColor() && isValid(r, c, r - 1, c - 2))
 					p.addMoveLoc(new Location(r - 1, c - 2));
 
-				board[r - 1][c - 2].setProtected(true, p.getColor());
-			}
-
 			if (r - 2 >= 0) {
-				if (c + 1 < board[r].length) {
-					if (board[r - 2][c + 1].getColor() != p.getColor())
+				if (c + 1 < board[r].length)
+					if (board[r - 2][c + 1].getColor() != p.getColor() && isValid(r, c, r - 2, c + 1))
 						p.addMoveLoc(new Location(r - 2, c + 1));
 
-					board[r - 2][c + 1].setProtected(true, p.getColor());
-				}
-
-				if (c - 1 >= 0) {
-					if (board[r - 2][c - 1].getColor() != p.getColor())
+				if (c - 1 >= 0)
+					if (board[r - 2][c - 1].getColor() != p.getColor() && isValid(r, c, r - 2, c - 1))
 						p.addMoveLoc(new Location(r - 2, c - 1));
-
-					board[r - 2][c - 1].setProtected(true, p.getColor());
-				}
 			}
 		}
 	}
@@ -285,133 +571,109 @@ public class Board {
 	public void setBishopLoc(Piece p, int r, int c) {
 		int tempR = r + 1, tempC = c + 1;
 		while (tempR < board.length && tempC < board[tempR].length
-				&& board[tempR][tempC].getType() == Type.BLANK) {
-			p.addMoveLoc(new Location(tempR, tempC));
-			board[tempR][tempC].setProtected(true, p.getColor());
+				&& board[tempR][tempC].getType() == Type.BLANK ) {
+			if(isValid(r, c, tempR, tempC))
+				p.addMoveLoc(new Location(tempR, tempC));
 			tempR++;
 			tempC++;
 		}
 
-		if (tempR < board.length && tempC < board[tempR].length) {
-			if (board[tempR][tempC].getColor() != p.getColor())
+		if (tempR < board.length && tempC < board[tempR].length)
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
-
-			board[tempR][tempC].setProtected(true, p.getColor());
-		}
 
 		tempR = r - 1;
 		tempC = c + 1;
 		while (tempR >= 0 && tempC < board[tempR].length
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			p.addMoveLoc(new Location(tempR, tempC));
-			board[tempR][tempC].setProtected(true, p.getColor());
+			if(isValid(r, c, tempR, tempC))
+				p.addMoveLoc(new Location(tempR, tempC));
 			tempR--;
 			tempC++;
 		}
 
-		if (tempR >= 0 && tempC < board[tempR].length) {
-			if (board[tempR][tempC].getColor() != p.getColor())
+		if (tempR >= 0 && tempC < board[tempR].length)
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
-
-			board[tempR][tempC].setProtected(true, p.getColor());
-		}
 
 		tempR = r + 1;
 		tempC = c - 1;
 		while (tempR < board.length && tempC >= 0
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			p.addMoveLoc(new Location(tempR, tempC));
-			board[tempR][tempC].setProtected(true, p.getColor());
+			if(isValid(r, c, tempR, tempC))
+				p.addMoveLoc(new Location(tempR, tempC));
 			tempR++;
 			tempC--;
 		}
 
-		if (tempR < board.length && tempC >= 0) {
-			if (board[tempR][tempC].getColor() != p.getColor())
+		if (tempR < board.length && tempC >= 0)
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
-
-			board[tempR][tempC].setProtected(true, p.getColor());
-		}
 
 		tempR = r - 1;
 		tempC = c - 1;
 		while (tempR >= 0 && tempC >= 0
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			p.addMoveLoc(new Location(tempR, tempC));
-			board[tempR][tempC].setProtected(true, p.getColor());
+			if(isValid(r, c, tempR, tempC))
+				p.addMoveLoc(new Location(tempR, tempC));
 			tempR--;
 			tempC--;
 		}
 
-		if (tempR >= 0 && tempC >= 0) {
-			if (board[tempR][tempC].getColor() != p.getColor())
+		if (tempR >= 0 && tempC >= 0)
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
-
-			board[tempR][tempC].setProtected(true, p.getColor());
-		}
 	}
 
 	public void setRookLoc(Piece p, int r, int c) {
 		int tempR = r + 1, tempC = c;
 		while (tempR < board.length
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			p.addMoveLoc(new Location(tempR, tempC));
-			board[tempR][tempC].setProtected(true, p.getColor());
+			if(isValid(r, c, tempR, tempC))
+				p.addMoveLoc(new Location(tempR, tempC));
 			tempR++;
 		}
 
-		if (tempR < board.length) {
-			if (board[tempR][tempC].getColor() != p.getColor())
+		if (tempR < board.length)
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
-
-			board[tempR][tempC].setProtected(true, p.getColor());
-		}
 
 		tempR = r - 1;
 		tempC = c;
 		while (tempR >= 0 && board[tempR][tempC].getType() == Type.BLANK) {
-			p.addMoveLoc(new Location(tempR, tempC));
-			board[tempR][tempC].setProtected(true, p.getColor());
+			if(isValid(r, c, tempR, tempC))
+				p.addMoveLoc(new Location(tempR, tempC));
 			tempR--;
 		}
 
-		if (tempR >= 0) {
-			if (board[tempR][tempC].getColor() != p.getColor())
+		if (tempR >= 0)
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
-
-			board[tempR][tempC].setProtected(true, p.getColor());
-		}
 
 		tempR = r;
 		tempC = c + 1;
 		while (tempC < board[tempR].length
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			p.addMoveLoc(new Location(tempR, tempC));
-			board[tempR][tempC].setProtected(true, p.getColor());
+			if(isValid(r, c, tempR, tempC))
+				p.addMoveLoc(new Location(tempR, tempC));
 			tempC++;
 		}
 
-		if (tempC < board[tempR].length) {
-			if (board[tempR][tempC].getColor() != p.getColor())
+		if (tempC < board[tempR].length)
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
-
-			board[tempR][tempC].setProtected(true, p.getColor());
-		}
 
 		tempR = r;
 		tempC = c - 1;
 		while (tempC >= 0 && board[tempR][tempC].getType() == Type.BLANK) {
-			p.addMoveLoc(new Location(tempR, tempC));
-			board[tempR][tempC].setProtected(true, p.getColor());
+			if(isValid(r, c, tempR, tempC))
+				p.addMoveLoc(new Location(tempR, tempC));
 			tempC--;
 		}
 
-		if (tempC >= 0) {
-			if (board[tempR][tempC].getColor() != p.getColor())
+		if (tempC >= 0)
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
-
-			board[tempR][tempC].setProtected(true, p.getColor());
-		}
 	}
 
 	public void setQueenLoc(Piece p, int r, int c) {
@@ -420,75 +682,66 @@ public class Board {
 	}
 
 	public void setKingLoc(Piece p, int r, int c) {
+		Team op = p.getColor();
+		
+		if(op == Team.WHITE)
+			op = Team.BLACK;
+		else
+			op = Team.WHITE;
+		
 		if (r + 1 < board.length) {
-			if (!board[r + 1][c].isProtected(p.getColor())
+			if (!board[r + 1][c].isProtected(op)
 					&& (board[r + 1][c].getType() == Type.BLANK || board[r + 1][c]
-							.getColor() != p.getColor()))
+							.getColor() != p.getColor()) && isValid(r, c, r + 1, c))
 				p.addMoveLoc(new Location(r + 1, c));
 
-			board[r + 1][c].setProtected(true, p.getColor());
-
 			if (c + 1 < board[r].length) {
-				if (!board[r + 1][c + 1].isProtected(p.getColor())
+				if (!board[r + 1][c + 1].isProtected(op)
 						&& (board[r + 1][c + 1].getType() == Type.BLANK || board[r + 1][c + 1]
-								.getColor() != p.getColor()))
+								.getColor() != p.getColor()) && isValid(r, c, r + 1, c + 1))
 					p.addMoveLoc(new Location(r + 1, c + 1));
-
-				board[r + 1][c + 1].setProtected(true, p.getColor());
 			}
 
 			if (c - 1 >= 0) {
-				if (!board[r + 1][c - 1].isProtected(p.getColor())
+				if (!board[r + 1][c - 1].isProtected(op)
 						&& (board[r + 1][c - 1].getType() == Type.BLANK || board[r + 1][c - 1]
-								.getColor() != p.getColor()))
+								.getColor() != p.getColor()) && isValid(r, c, r + 1, c - 1))
 					p.addMoveLoc(new Location(r + 1, c - 1));
-
-				board[r + 1][c - 1].setProtected(true, p.getColor());
 			}
 		}
 
 		if (c + 1 < board[r].length) {
-			if (!board[r][c + 1].isProtected(p.getColor())
+			if (!board[r][c + 1].isProtected(op)
 					&& (board[r][c + 1].getType() == Type.BLANK || board[r][c + 1]
-							.getColor() != p.getColor()))
+							.getColor() != p.getColor()) && isValid(r, c, r, c + 1))
 				p.addMoveLoc(new Location(r, c + 1));
-
-			board[r][c + 1].setProtected(true, p.getColor());
 		}
 
 		if (c - 1 >= 0) {
-			if (!board[r][c - 1].isProtected(p.getColor())
+			if (!board[r][c - 1].isProtected(op)
 					&& (board[r][c - 1].getType() == Type.BLANK || board[r][c - 1]
-							.getColor() != p.getColor()))
+							.getColor() != p.getColor()) && isValid(r, c, r, c - 1))
 				p.addMoveLoc(new Location(r, c - 1));
-
-			board[r][c - 1].setProtected(true, p.getColor());
 		}
 
 		if (r - 1 >= 0) {
-			if (!board[r - 1][c].isProtected(p.getColor())
+			if (!board[r - 1][c].isProtected(op)
 					&& (board[r - 1][c].getType() == Type.BLANK || board[r - 1][c]
-							.getColor() != p.getColor()))
+							.getColor() != p.getColor()) && isValid(r, c, r - 1, c))
 				p.addMoveLoc(new Location(r - 1, c));
 
-			board[r - 1][c].setProtected(true, p.getColor());
-
 			if (c + 1 < board[r].length) {
-				if (!board[r - 1][c + 1].isProtected(p.getColor())
+				if (!board[r - 1][c + 1].isProtected(op)
 						&& (board[r - 1][c + 1].getType() == Type.BLANK || board[r - 1][c + 1]
-								.getColor() != p.getColor()))
+								.getColor() != p.getColor()) && isValid(r, c, r - 1, c + 1))
 					p.addMoveLoc(new Location(r - 1, c + 1));
-
-				board[r - 1][c + 1].setProtected(true, p.getColor());
 			}
 
 			if (c - 1 >= 0) {
-				if (!board[r - 1][c - 1].isProtected(p.getColor())
+				if (!board[r - 1][c - 1].isProtected(op)
 						&& (board[r - 1][c - 1].getType() == Type.BLANK || board[r - 1][c - 1]
-								.getColor() != p.getColor()))
+								.getColor() != p.getColor()) && isValid(r, c, r - 1, c - 1))
 					p.addMoveLoc(new Location(r - 1, c - 1));
-
-				board[r - 1][c - 1].setProtected(true, p.getColor());
 			}
 		}
 	}

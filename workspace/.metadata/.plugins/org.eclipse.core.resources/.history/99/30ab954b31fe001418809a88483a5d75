@@ -44,7 +44,7 @@ public class Board implements Cloneable {
 		board[7][4] = new Piece(Type.KING, Team.WHITE);
 
 		turn = Team.WHITE;
-
+		
 		setLocations();
 		setProtections();
 	}
@@ -82,6 +82,7 @@ public class Board implements Cloneable {
 		board2[row2][col2] = p;
 		board2[row1][col1] = new Piece();
 
+		
 		Board b2 = new Board(board2, turn);
 		return !b2.isInCheck(p.getColor());
 	}
@@ -103,18 +104,18 @@ public class Board implements Cloneable {
 
 		return king.isProtected(op);
 	}
-
-	public boolean isMate(Team t) {
+	
+	public boolean isMate(Team t){
 		boolean flag = true;
-
+		
 		for (int r = 0; r < board.length; r++)
 			for (int c = 0; c < board[r].length; c++)
-				if (board[r][c].getColor() == t)
-					if (board[r][c].getMoveLoc().size() != 0)
+				if(board[r][c].getColor() == t)
+					if(board[r][c].getMoveLoc().size() != 0)
 						flag = false;
-
+		
 		return flag;
-
+				
 	}
 
 	public void nextTurn() {
@@ -151,58 +152,42 @@ public class Board implements Cloneable {
 				s.setSelected(true);
 		} else if (s.canMoveTo(r, c))
 			movePiece(s, oldR, oldC, r, c);
-		else if (board[r][c].getType() != Type.BLANK)// &&
-														// board[r][c].getColor()
-														// == turn)
+		else if(board[r][c].getType() != Type.BLANK)//&& board[r][c].getColor() == turn)
 			board[r][c].setSelected(true);
 		else
 			board[r][c].setSelected(false);
 	}
-
-	public void movePiece(Piece s, int oldR, int oldC, int r, int c) {
+	
+	public void movePiece(Piece s, int oldR, int oldC, int r, int c){
 		s.setHasMoved(true);
 		board[r][c] = s;
 		board[oldR][oldC] = new Piece();
 		
-		if(s.getType() == Type.KING && Math.abs(oldC - c) > 1){
-			if(oldC < c){
-				Piece rook = board[r][c + 1];
-				board[r][c - 1] = rook;
-				board[r][c + 1] = new Piece();
-			}else{
-				Piece rook = board[r][c - 2];
-				board[r][c + 1] = rook;
-				board[r][c - 2] = new Piece();
-			}
-		}
-
 		setLocations();
 		setProtections();
-
+		
 		Team op = s.getColor();
-		if (op == Team.WHITE)
+		if(op == Team.WHITE)
 			op = Team.BLACK;
 		else
 			op = Team.WHITE;
-
-		if (isInCheck(op)) {
-			if (isMate(op))
-				Toast.makeText(context, "Check mate " + s.getColor() + " wins",
-						Toast.LENGTH_LONG).show();
+		
+		if(isInCheck(op)){
+			if(isMate(op))
+				Toast.makeText(context, "Check mate " + s.getColor() + " wins", Toast.LENGTH_LONG).show();
 			else
-				Toast.makeText(context, op + " is in check", Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(context, op + " is in check", Toast.LENGTH_LONG).show();
 		}
-
+		
 		setLocations();
 		setProtections();
-
+		
 		nextTurn();
 	}
 
 	public void setLocations() {
 		for (int r = 0; r < board.length; r++)
-			for (int c = 0; c < board[r].length; c++)
+			for (int c = 0; c < board[r].length; c++) 
 				board[r][c].removeLocations();
 
 		ArrayList<Piece> kings = new ArrayList<Piece>();
@@ -228,10 +213,10 @@ public class Board implements Cloneable {
 			setPieceLocation(kings.get(i), row.get(i), col.get(i));
 
 	}
-
-	public void setProtections() {
+	
+	public void setProtections(){
 		for (int r = 0; r < board.length; r++)
-			for (int c = 0; c < board[r].length; c++)
+			for (int c = 0; c < board[r].length; c++) 
 				board[r][c].setProtected(false, Team.BLANK);
 
 		ArrayList<Piece> kings = new ArrayList<Piece>();
@@ -256,7 +241,7 @@ public class Board implements Cloneable {
 		for (int i = 0; i < kings.size(); i++)
 			setPieceProtection(kings.get(i), row.get(i), col.get(i));
 	}
-
+	
 	public void setPieceLocation(Piece p, int r, int c) {
 		switch (p.getType()) {
 		case PAWN:
@@ -318,11 +303,11 @@ public class Board implements Cloneable {
 			if (r - 1 >= 0) {
 				if (c + 1 < board[r].length)
 					board[r - 1][c + 1].setProtected(true, p.getColor());
-
-				if (c - 1 >= 0)
+				
+				if (c - 1 >= 0) 
 					board[r - 1][c - 1].setProtected(true, p.getColor());
 			}
-		} else {
+		}else{
 			if (r + 1 < board.length) {
 				if (c + 1 < board.length)
 					board[r + 1][c + 1].setProtected(true, p.getColor());
@@ -357,7 +342,7 @@ public class Board implements Cloneable {
 				board[r - 1][c - 2].setProtected(true, p.getColor());
 
 			if (r - 2 >= 0) {
-				if (c + 1 < board[r].length)
+				if (c + 1 < board[r].length) 
 					board[r - 2][c + 1].setProtected(true, p.getColor());
 
 				if (c - 1 >= 0)
@@ -375,7 +360,7 @@ public class Board implements Cloneable {
 			tempC++;
 		}
 
-		if (tempR < board.length && tempC < board[tempR].length)
+		if (tempR < board.length && tempC < board[tempR].length) 
 			board[tempR][tempC].setProtected(true, p.getColor());
 
 		tempR = r - 1;
@@ -387,7 +372,7 @@ public class Board implements Cloneable {
 			tempC++;
 		}
 
-		if (tempR >= 0 && tempC < board[tempR].length)
+		if (tempR >= 0 && tempC < board[tempR].length) 
 			board[tempR][tempC].setProtected(true, p.getColor());
 
 		tempR = r + 1;
@@ -399,7 +384,7 @@ public class Board implements Cloneable {
 			tempC--;
 		}
 
-		if (tempR < board.length && tempC >= 0)
+		if (tempR < board.length && tempC >= 0) 
 			board[tempR][tempC].setProtected(true, p.getColor());
 
 		tempR = r - 1;
@@ -425,7 +410,7 @@ public class Board implements Cloneable {
 
 		if (tempR < board.length)
 			board[tempR][tempC].setProtected(true, p.getColor());
-
+		
 		tempR = r - 1;
 		tempC = c;
 		while (tempR >= 0 && board[tempR][tempC].getType() == Type.BLANK) {
@@ -486,7 +471,7 @@ public class Board implements Cloneable {
 			if (c + 1 < board[r].length)
 				board[r - 1][c + 1].setProtected(true, p.getColor());
 
-			if (c - 1 >= 0)
+			if (c - 1 >= 0) 
 				board[r - 1][c - 1].setProtected(true, p.getColor());
 		}
 	}
@@ -544,48 +529,40 @@ public class Board implements Cloneable {
 	public void setKnightLoc(Piece p, int r, int c) {
 		if (r + 1 < board.length) {
 			if (c + 2 < board[r].length)
-				if (board[r + 1][c + 2].getColor() != p.getColor()
-						&& isValid(r, c, r + 1, c + 2))
+				if (board[r + 1][c + 2].getColor() != p.getColor() && isValid(r, c, r + 1, c + 2))
 					p.addMoveLoc(new Location(r + 1, c + 2));
 
 			if (c - 2 >= 0)
-				if (board[r + 1][c - 2].getColor() != p.getColor()
-						&& isValid(r, c, r + 1, c - 2))
+				if (board[r + 1][c - 2].getColor() != p.getColor() && isValid(r, c, r + 1, c - 2))
 					p.addMoveLoc(new Location(r + 1, c - 2));
 
 			if (r + 2 < board.length) {
 				if (c + 1 < board[r].length)
-					if (board[r + 2][c + 1].getColor() != p.getColor()
-							&& isValid(r, c, r + 2, c + 1))
+					if (board[r + 2][c + 1].getColor() != p.getColor() && isValid(r, c, r + 2, c + 1))
 						p.addMoveLoc(new Location(r + 2, c + 1));
 
 				if (c - 1 >= 0)
-					if (board[r + 2][c - 1].getColor() != p.getColor()
-							&& isValid(r, c, r + 2, c - 1))
+					if (board[r + 2][c - 1].getColor() != p.getColor() && isValid(r, c, r + 2, c - 1))
 						p.addMoveLoc(new Location(r + 2, c - 1));
 			}
 		}
 
 		if (r - 1 >= 0) {
 			if (c + 2 < board[r].length)
-				if (board[r - 1][c + 2].getColor() != p.getColor()
-						&& isValid(r, c, r - 1, c + 2))
+				if (board[r - 1][c + 2].getColor() != p.getColor() && isValid(r, c, r - 1, c + 2))
 					p.addMoveLoc(new Location(r - 1, c + 2));
 
 			if (c - 2 >= 0)
-				if (board[r - 1][c - 2].getColor() != p.getColor()
-						&& isValid(r, c, r - 1, c - 2))
+				if (board[r - 1][c - 2].getColor() != p.getColor() && isValid(r, c, r - 1, c - 2))
 					p.addMoveLoc(new Location(r - 1, c - 2));
 
 			if (r - 2 >= 0) {
 				if (c + 1 < board[r].length)
-					if (board[r - 2][c + 1].getColor() != p.getColor()
-							&& isValid(r, c, r - 2, c + 1))
+					if (board[r - 2][c + 1].getColor() != p.getColor() && isValid(r, c, r - 2, c + 1))
 						p.addMoveLoc(new Location(r - 2, c + 1));
 
 				if (c - 1 >= 0)
-					if (board[r - 2][c - 1].getColor() != p.getColor()
-							&& isValid(r, c, r - 2, c - 1))
+					if (board[r - 2][c - 1].getColor() != p.getColor() && isValid(r, c, r - 2, c - 1))
 						p.addMoveLoc(new Location(r - 2, c - 1));
 			}
 		}
@@ -594,61 +571,57 @@ public class Board implements Cloneable {
 	public void setBishopLoc(Piece p, int r, int c) {
 		int tempR = r + 1, tempC = c + 1;
 		while (tempR < board.length && tempC < board[tempR].length
-				&& board[tempR][tempC].getType() == Type.BLANK) {
-			if (isValid(r, c, tempR, tempC))
+				&& board[tempR][tempC].getType() == Type.BLANK ) {
+			if(isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 			tempR++;
 			tempC++;
 		}
 
 		if (tempR < board.length && tempC < board[tempR].length)
-			if (board[tempR][tempC].getColor() != p.getColor()
-					&& isValid(r, c, tempR, tempC))
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 
 		tempR = r - 1;
 		tempC = c + 1;
 		while (tempR >= 0 && tempC < board[tempR].length
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			if (isValid(r, c, tempR, tempC))
+			if(isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 			tempR--;
 			tempC++;
 		}
 
 		if (tempR >= 0 && tempC < board[tempR].length)
-			if (board[tempR][tempC].getColor() != p.getColor()
-					&& isValid(r, c, tempR, tempC))
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 
 		tempR = r + 1;
 		tempC = c - 1;
 		while (tempR < board.length && tempC >= 0
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			if (isValid(r, c, tempR, tempC))
+			if(isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 			tempR++;
 			tempC--;
 		}
 
 		if (tempR < board.length && tempC >= 0)
-			if (board[tempR][tempC].getColor() != p.getColor()
-					&& isValid(r, c, tempR, tempC))
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 
 		tempR = r - 1;
 		tempC = c - 1;
 		while (tempR >= 0 && tempC >= 0
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			if (isValid(r, c, tempR, tempC))
+			if(isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 			tempR--;
 			tempC--;
 		}
 
 		if (tempR >= 0 && tempC >= 0)
-			if (board[tempR][tempC].getColor() != p.getColor()
-					&& isValid(r, c, tempR, tempC))
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 	}
 
@@ -656,54 +629,50 @@ public class Board implements Cloneable {
 		int tempR = r + 1, tempC = c;
 		while (tempR < board.length
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			if (isValid(r, c, tempR, tempC))
+			if(isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 			tempR++;
 		}
 
 		if (tempR < board.length)
-			if (board[tempR][tempC].getColor() != p.getColor()
-					&& isValid(r, c, tempR, tempC))
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 
 		tempR = r - 1;
 		tempC = c;
 		while (tempR >= 0 && board[tempR][tempC].getType() == Type.BLANK) {
-			if (isValid(r, c, tempR, tempC))
+			if(isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 			tempR--;
 		}
 
 		if (tempR >= 0)
-			if (board[tempR][tempC].getColor() != p.getColor()
-					&& isValid(r, c, tempR, tempC))
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 
 		tempR = r;
 		tempC = c + 1;
 		while (tempC < board[tempR].length
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			if (isValid(r, c, tempR, tempC))
+			if(isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 			tempC++;
 		}
 
 		if (tempC < board[tempR].length)
-			if (board[tempR][tempC].getColor() != p.getColor()
-					&& isValid(r, c, tempR, tempC))
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 
 		tempR = r;
 		tempC = c - 1;
 		while (tempC >= 0 && board[tempR][tempC].getType() == Type.BLANK) {
-			if (isValid(r, c, tempR, tempC))
+			if(isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 			tempC--;
 		}
 
 		if (tempC >= 0)
-			if (board[tempR][tempC].getColor() != p.getColor()
-					&& isValid(r, c, tempR, tempC))
+			if (board[tempR][tempC].getColor() != p.getColor() && isValid(r, c, tempR, tempC))
 				p.addMoveLoc(new Location(tempR, tempC));
 	}
 
@@ -714,32 +683,29 @@ public class Board implements Cloneable {
 
 	public void setKingLoc(Piece p, int r, int c) {
 		Team op = p.getColor();
-
-		if (op == Team.WHITE)
+		
+		if(op == Team.WHITE)
 			op = Team.BLACK;
 		else
 			op = Team.WHITE;
-
+		
 		if (r + 1 < board.length) {
 			if (!board[r + 1][c].isProtected(op)
 					&& (board[r + 1][c].getType() == Type.BLANK || board[r + 1][c]
-							.getColor() != p.getColor())
-					&& isValid(r, c, r + 1, c))
+							.getColor() != p.getColor()) && isValid(r, c, r + 1, c))
 				p.addMoveLoc(new Location(r + 1, c));
 
 			if (c + 1 < board[r].length) {
 				if (!board[r + 1][c + 1].isProtected(op)
 						&& (board[r + 1][c + 1].getType() == Type.BLANK || board[r + 1][c + 1]
-								.getColor() != p.getColor())
-						&& isValid(r, c, r + 1, c + 1))
+								.getColor() != p.getColor()) && isValid(r, c, r + 1, c + 1))
 					p.addMoveLoc(new Location(r + 1, c + 1));
 			}
 
 			if (c - 1 >= 0) {
 				if (!board[r + 1][c - 1].isProtected(op)
 						&& (board[r + 1][c - 1].getType() == Type.BLANK || board[r + 1][c - 1]
-								.getColor() != p.getColor())
-						&& isValid(r, c, r + 1, c - 1))
+								.getColor() != p.getColor()) && isValid(r, c, r + 1, c - 1))
 					p.addMoveLoc(new Location(r + 1, c - 1));
 			}
 		}
@@ -747,73 +713,46 @@ public class Board implements Cloneable {
 		if (c + 1 < board[r].length) {
 			if (!board[r][c + 1].isProtected(op)
 					&& (board[r][c + 1].getType() == Type.BLANK || board[r][c + 1]
-							.getColor() != p.getColor())
-					&& isValid(r, c, r, c + 1))
+							.getColor() != p.getColor()) && isValid(r, c, r, c + 1))
 				p.addMoveLoc(new Location(r, c + 1));
 		}
 
 		if (c - 1 >= 0) {
 			if (!board[r][c - 1].isProtected(op)
 					&& (board[r][c - 1].getType() == Type.BLANK || board[r][c - 1]
-							.getColor() != p.getColor())
-					&& isValid(r, c, r, c - 1))
+							.getColor() != p.getColor()) && isValid(r, c, r, c - 1))
 				p.addMoveLoc(new Location(r, c - 1));
 		}
 
 		if (r - 1 >= 0) {
 			if (!board[r - 1][c].isProtected(op)
 					&& (board[r - 1][c].getType() == Type.BLANK || board[r - 1][c]
-							.getColor() != p.getColor())
-					&& isValid(r, c, r - 1, c))
+							.getColor() != p.getColor()) && isValid(r, c, r - 1, c))
 				p.addMoveLoc(new Location(r - 1, c));
 
 			if (c + 1 < board[r].length) {
 				if (!board[r - 1][c + 1].isProtected(op)
 						&& (board[r - 1][c + 1].getType() == Type.BLANK || board[r - 1][c + 1]
-								.getColor() != p.getColor())
-						&& isValid(r, c, r - 1, c + 1))
+								.getColor() != p.getColor()) && isValid(r, c, r - 1, c + 1))
 					p.addMoveLoc(new Location(r - 1, c + 1));
 			}
 
 			if (c - 1 >= 0) {
 				if (!board[r - 1][c - 1].isProtected(op)
 						&& (board[r - 1][c - 1].getType() == Type.BLANK || board[r - 1][c - 1]
-								.getColor() != p.getColor())
-						&& isValid(r, c, r - 1, c - 1))
+								.getColor() != p.getColor()) && isValid(r, c, r - 1, c - 1))
 					p.addMoveLoc(new Location(r - 1, c - 1));
 			}
 		}
-
-		if (!p.hasMoved() && !isInCheck(p.getColor())) {
+		
+		
+		if(!p.hasMoved()){
 			int tempR = r, tempC = c + 1;
-			op = p.getColor();
-			
-			if(op == Team.WHITE)
-				op = Team.BLACK;
-			else
-				op = Team.WHITE;
-			
-			while (board[tempR][tempC].getType() == Type.BLANK
-					&& tempC < board[r].length
-					&& !board[tempR][tempC].isProtected(op))
+			while(board[tempR][tempC].getType() == Type.BLANK && tempC < board[r].length)
 				tempC++;
-
-			if (tempC < board[r].length
-					&& board[tempR][tempC].getType() == Type.ROOK)
-				if (!board[tempR][tempC].hasMoved())
-					p.addMoveLoc(new Location(tempR, tempC - 1));
 			
-			tempR = r;
-			tempC = c - 1;
-			while (board[tempR][tempC].getType() == Type.BLANK
-					&& tempC > 0
-					&& !board[tempR][tempC].isProtected(op))
-				tempC--;
-
-			if (tempC >= 0
-					&& board[tempR][tempC].getType() == Type.ROOK)
-				if (!board[tempR][tempC].hasMoved())
-					p.addMoveLoc(new Location(tempR, tempC + 2));
+			if(tempC < board[r].length && board[tempR][tempC].getType() == Type.ROOK)
+				if(!board[tempR][tempC].hasMoved())
 		}
 	}
 }

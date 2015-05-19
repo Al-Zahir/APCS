@@ -784,7 +784,7 @@ public class Board implements Cloneable {
 			}
 		}
 
-		if (!p.hasMoved() && !isInCheck(p.getColor())) {
+		if (!p.hasMoved()) {
 			int tempR = r, tempC = c + 1;
 			op = p.getColor();
 			

@@ -163,18 +163,6 @@ public class Board implements Cloneable {
 		s.setHasMoved(true);
 		board[r][c] = s;
 		board[oldR][oldC] = new Piece();
-		
-		if(s.getType() == Type.KING && Math.abs(oldC - c) > 1){
-			if(oldC < c){
-				Piece rook = board[r][c + 1];
-				board[r][c - 1] = rook;
-				board[r][c + 1] = new Piece();
-			}else{
-				Piece rook = board[r][c - 2];
-				board[r][c + 1] = rook;
-				board[r][c - 2] = new Piece();
-			}
-		}
 
 		setLocations();
 		setProtections();
@@ -784,7 +772,7 @@ public class Board implements Cloneable {
 			}
 		}
 
-		if (!p.hasMoved() && !isInCheck(p.getColor())) {
+		if (!p.hasMoved()) {
 			int tempR = r, tempC = c + 1;
 			op = p.getColor();
 			
@@ -801,7 +789,7 @@ public class Board implements Cloneable {
 			if (tempC < board[r].length
 					&& board[tempR][tempC].getType() == Type.ROOK)
 				if (!board[tempR][tempC].hasMoved())
-					p.addMoveLoc(new Location(tempR, tempC - 1));
+					p.addMoveLoc(new Location(tempR, tempC));
 			
 			tempR = r;
 			tempC = c - 1;
@@ -813,7 +801,7 @@ public class Board implements Cloneable {
 			if (tempC >= 0
 					&& board[tempR][tempC].getType() == Type.ROOK)
 				if (!board[tempR][tempC].hasMoved())
-					p.addMoveLoc(new Location(tempR, tempC + 2));
+					p.addMoveLoc(new Location(tempR, tempC));
 		}
 	}
 }

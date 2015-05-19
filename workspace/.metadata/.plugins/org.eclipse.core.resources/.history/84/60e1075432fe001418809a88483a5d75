@@ -784,7 +784,7 @@ public class Board implements Cloneable {
 			}
 		}
 
-		if (!p.hasMoved() && !isInCheck(p.getColor())) {
+		if (!p.hasMoved()) {
 			int tempR = r, tempC = c + 1;
 			op = p.getColor();
 			
@@ -813,7 +813,7 @@ public class Board implements Cloneable {
 			if (tempC >= 0
 					&& board[tempR][tempC].getType() == Type.ROOK)
 				if (!board[tempR][tempC].hasMoved())
-					p.addMoveLoc(new Location(tempR, tempC + 2));
+					p.addMoveLoc(new Location(tempR, tempC));
 		}
 	}
 }

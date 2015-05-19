@@ -1,0 +1,39 @@
+package com.Zeditude.APCompFinal;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AI {
+	List<Node> start;
+	
+	public AI(Board b, Team t){
+		
+	}
+
+	private Node createNode(Piece[][] board2, int r, int c, Piece p, Location l, Team t) {
+		Piece[][] board3 = new Piece[board2.length][board2[0].length];
+		
+		for(int i = 0; i < board2.length; i++)
+			for(int j = 0; j < board2[i].length; j++)
+				board3[i][j] = new Piece(board2[i][j]);
+		
+		board3[l.getRow()][l.getCol()] = p;
+		board3[r][c] = new Piece();
+		
+		Team op = t;
+		
+		if(op == Team.WHITE)
+			op = Team.BLACK;
+		else
+			op = Team.WHITE;
+		
+		Board newBoard = new Board(board3.clone(), op);
+		newBoard.setProtections();
+		
+		return new Node(newBoard);
+	}
+	
+	public Node getBoard(){
+		return start.get(0);
+	}
+}

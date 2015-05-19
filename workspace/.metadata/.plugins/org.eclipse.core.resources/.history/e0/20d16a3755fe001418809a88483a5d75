@@ -1,0 +1,12 @@
+package com.Zeditude.APCompFinal;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AI {
+	List<Node> start;
+	
+	public AI(Board b, Team t){
+		Board b2 = new Board(b.getBoard(), t);
+	}
+}

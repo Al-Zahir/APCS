@@ -1,0 +1,52 @@
+package com.Zeditude.APCompFinal;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AI {
+	List<Node> start;
+	
+	public AI(Board b, Team t){
+		start = new ArrayList<Node>();
+		Piece[][] board = b.getBoard().clone();
+		
+		Piece[][] newBoard = new Piece[board.length][board[0].length];
+		
+		for(int r = 0; r < newBoard.length; r++)
+			for(int c = 0; c < newBoard[r].length; c++)
+				newBoard[r][c] = board[r][c];
+		
+		for(int r = 0; r < newBoard.length; r++){
+			for(int c = 0; c < newBoard[r].length; c++){
+				if(newBoard[r][c].getColor() == t){
+					Piece p = new Piece(newBoard[r][c]);
+					List<Location> loc = p.getMoveLoc();
+					for(Location l : loc)
+						start.add(createNode(new Board(newBoard, t), p, r, c, l, t));
+				}
+			}
+		}
+	}
+	
+	private Node createNode(Board board, Piece p, int r, int c, Location l,
+			Team t) {
+		Piece[][] currentBoard = board.getBoard().clone();
+		
+		Piece[][] changedBoard = new Piece[currentBoard.length][currentBoard[0].length];
+		
+		for(int i = 0; i < newBoard.length; ++)
+			for(int c = 0; c < newBoard[r].length; c++)
+				newBoard[r][c] = board[r][c];
+		
+		
+		
+		changedBoard[l.getRow()][l.getCol()] = p;
+		changedBoard[r][c] = new Piece();
+		
+		return null;
+	}
+
+	public Node getBoard(){
+		return start.get(0);
+	}
+}

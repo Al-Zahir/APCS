@@ -1,0 +1,8 @@
+package com.Zeditude.APCompFinal;
+
+public class AI {
+	Node start;
+	public AI(){
+		
+	}
+}

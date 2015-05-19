@@ -9,6 +9,7 @@ public class Board implements Cloneable {
 	private Context context;
 	private Piece[][] board;
 	private Team turn;
+	private AI ai;
 
 	public Board(Context con, int rows, int cols) {
 		board = new Piece[rows][cols];
@@ -44,9 +45,11 @@ public class Board implements Cloneable {
 		board[7][4] = new Piece(Type.KING, Team.WHITE);
 
 		turn = Team.WHITE;
-
+		
 		setLocations();
 		setProtections();
+		
+		ai = new AI(this, turn);
 	}
 
 	public Board(Piece[][] b, Team t) {
@@ -103,6 +106,35 @@ public class Board implements Cloneable {
 
 		return king.isProtected(op);
 	}
+	
+	public boolean isStaleMate(){
+		boolean kingsOnly = true;
+		
+		for (int r = 0; r < board.length; r++)
+			for (int c = 0; c < board[r].length; c++)
+				if(board[r][c].getType() != Type.BLANK && board[r][c].getType() != Type.KING)
+					kingsOnly = false;
+		
+		boolean noMovesWhite = true;
+		boolean noMovesBlack = true;
+		
+		for (int r = 0; r < board.length; r++){
+			for (int c = 0; c < board[r].length; c++){
+				Piece p = board[r][c];
+				
+				if(p.getColor() == Team.WHITE){
+					if(p.getMoveLoc().size() > 0)
+						noMovesWhite = false;
+				}else if(p.getColor() == Team.BLACK){
+					if(p.getMoveLoc().size() > 0)
+						noMovesBlack = false;
+				}
+			}
+		}
+		
+		return (noMovesWhite && !isInCheck(Team.WHITE)) || (noMovesBlack && !isInCheck(Team.BLACK)) || kingsOnly;
+				
+	}
 
 	public boolean isMate(Team t) {
 		boolean flag = true;
@@ -147,13 +179,11 @@ public class Board implements Cloneable {
 		if (r == oldR && c == oldC)
 			board[r][c].setSelected(false);
 		else if (oldR == -1 && oldC == -1) {
-			if (s.getType() != Type.BLANK)// && s.getColor() == turn)
+			if (s.getType() != Type.BLANK && s.getColor() == turn)
 				s.setSelected(true);
 		} else if (s.canMoveTo(r, c))
 			movePiece(s, oldR, oldC, r, c);
-		else if (board[r][c].getType() != Type.BLANK)// &&
-														// board[r][c].getColor()
-														// == turn)
+		else if (board[r][c].getType() != Type.BLANK && board[r][c].getColor() == turn)
 			board[r][c].setSelected(true);
 		else
 			board[r][c].setSelected(false);
@@ -197,6 +227,10 @@ public class Board implements Cloneable {
 		setLocations();
 		setProtections();
 
+		nextTurn();
+		
+		ai.resetBoard(this, turn);
+		this.board = ai.getBoard();
 		nextTurn();
 	}
 

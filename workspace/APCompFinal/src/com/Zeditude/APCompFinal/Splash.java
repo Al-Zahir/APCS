@@ -19,7 +19,7 @@ public class Splash extends Activity {
 		setContentView(R.layout.board);
 
 		board = new Board(this, 8, 8);
-
+		
 		reDraw();
 	}
 

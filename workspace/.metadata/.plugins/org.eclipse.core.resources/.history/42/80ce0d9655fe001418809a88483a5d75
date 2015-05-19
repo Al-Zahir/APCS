@@ -1,0 +1,32 @@
+package com.Zeditude.APCompFinal;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AI {
+	List<Node> start;
+	
+	public AI(Board b, Team t){
+		Board b2 = new Board(b.getBoard(), t);
+		b2.setLocations();
+		b2.setProtections();
+		
+		start = new ArrayList<Node>();
+		
+		for(int r = 0; r < b2.getBoard().length; r++){
+			for(int c = 0; c < b2.getBoard()[r].length; c++){
+				if(b2.getBoard()[r][c].getColor() == t){
+					Piece p = b2.getPiece(r, c);
+					List<Location> loc = p.getMoveLoc();
+					for(Location l : loc)
+						start.add(createNode(b2.getBoard().clone(), r, c, p, l));
+				}
+			}
+		}
+	}
+
+	private Node createNode(Piece[][] board2, int r, int c, Piece p, Location l) {
+		board2[][]
+		return null;
+	}
+}

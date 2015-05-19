@@ -1,0 +1,33 @@
+package com.Zeditude.APCompFinal;
+
+import java.util.List;
+
+public class Node {
+	private Board currentBoard;
+	private Node parent;
+	private List<Node> nodes;
+	private boolean current;
+	
+	public Node(Board b, Node p, List<Node> n, boolean c){
+		currentBoard = b;
+		parent = p;
+		nodes = n;
+		current = c;
+	}
+	
+	public Board getBoard(){
+		return currentBoard;
+	}
+	
+	public Node getParent(){
+		return parent;
+	}
+	
+	public List<Node> getNodes(){
+		return nodes;
+	}
+	
+	public boolean isCurrent(){
+		return current;
+	}
+}

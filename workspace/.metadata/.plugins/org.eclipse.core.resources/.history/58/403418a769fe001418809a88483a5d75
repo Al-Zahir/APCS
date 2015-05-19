@@ -1,0 +1,19 @@
+package com.Zeditude.APCompFinal;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AI {
+	List<Node> start;
+	
+	public AI(Board b, Team t){
+		start = new ArrayList<Node>();
+		Piece[][] board = b.getBoard().clone();
+		
+		board[0][0] = new Piece();
+	}
+	
+	public Node getBoard(){
+		return start.get(0);
+	}
+}

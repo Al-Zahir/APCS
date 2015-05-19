@@ -1,0 +1,23 @@
+package com.Zeditude.APCompFinal;
+
+import java.util.List;
+
+public class AI {
+	List<Node> start;
+	
+	public AI(Board b, Team t){
+		start = createNodes(b, t);
+	}
+
+	private List<Node> createNodes(Board b, Team t) {
+		Board b2 = new Board(b.getBoard(), t);
+		Piece[][] board = b2.getBoard();
+		
+		List<Node> nodes = new ArrayList<Node>();
+		
+		for(int r = 0; r < board.length; r++){
+			for(int c = 0; c < board[r].length; c++){
+				
+		return null;
+	}
+}

@@ -1,0 +1,16 @@
+package com.Zeditude.APCompFinal;
+
+import java.util.List;
+
+public class AI {
+	List<Node> start;
+	
+	public AI(Board b, Team t){
+		start = createNodes(b, t);
+	}
+
+	private List<Node> createNodes(Board b, Team t) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

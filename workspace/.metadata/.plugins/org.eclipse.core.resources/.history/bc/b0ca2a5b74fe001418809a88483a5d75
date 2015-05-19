@@ -1,0 +1,69 @@
+package com.Zeditude.APCompFinal;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AI {
+	public Node start;
+	private Node currentNode;
+	
+	public AI(Board b, Team t){
+		resetBoard(b, t);
+	}
+	
+	public void resetBoard(Board b, Team t){
+		List<Node> s = new ArrayList<Node>();
+		Piece[][] board = b.getBoard();
+		
+		Piece[][] newBoard = new Piece[board.length][board[0].length];
+		
+		for(int r = 0; r < newBoard.length; r++)
+			for(int c = 0; c < newBoard[r].length; c++)
+				newBoard[r][c] = new Piece(board[r][c]);
+		
+		for(int r = 0; r < newBoard.length; r++){
+			for(int c = 0; c < newBoard[r].length; c++){
+				if(newBoard[r][c].getColor() == t){
+					Piece p = new Piece(newBoard[r][c]);
+					List<Location> loc = p.getMoveLoc();
+					for(Location l : loc){
+						currentNode = createNode(new Board(newBoard, t), p, r, c, l, t);
+					}
+				}
+			}
+		}
+		
+		start = new Node(b, s, true);
+	}
+	
+	private Node createNode(Board board, Piece p, int r, int c, Location l,
+			Team t) {
+		Piece[][] currentBoard = board.getBoard();
+		
+		Piece[][] newBoard = new Piece[currentBoard.length][currentBoard[0].length];
+		
+		for(int i = 0; i < newBoard.length; i++)
+			for(int j = 0; j < newBoard[i].length; j++)
+				newBoard[i][j] = new Piece(currentBoard[i][j]);
+		
+		newBoard[l.getRow()][l.getCol()] = p;
+		newBoard[r][c] = new Piece();
+		
+		Team op = (t == Team.WHITE) ? Team.BLACK : Team.WHITE;
+		
+		Board b = new Board(newBoard, op);
+		Node n;
+		b.setLocations();
+		b.setProtections();
+		
+		if(b.isMate(t))
+			n = null;
+		else 
+		
+		return new Node(b, null, false);
+	}
+
+	public Piece[][] getBoard(){
+		return start.getNodes().get((int)(Math.random() * start.getNodes().size())).getBoard().getBoard();
+	}
+}

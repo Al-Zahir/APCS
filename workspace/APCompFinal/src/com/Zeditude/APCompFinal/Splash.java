@@ -48,7 +48,6 @@ public class Splash extends Activity {
 					int position, long id) {
 				board.select((int) (position / 8), (int) (position % 8));
 				reDraw();
-
 			}
 		});
 	}

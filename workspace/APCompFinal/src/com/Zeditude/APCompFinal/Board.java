@@ -179,11 +179,11 @@ public class Board implements Cloneable {
 		if (r == oldR && c == oldC)
 			board[r][c].setSelected(false);
 		else if (oldR == -1 && oldC == -1) {
-			if (s.getType() != Type.BLANK && s.getColor() == turn)
+			if (s.getType() != Type.BLANK)// && s.getColor() == turn)
 				s.setSelected(true);
 		} else if (s.canMoveTo(r, c))
 			movePiece(s, oldR, oldC, r, c);
-		else if (board[r][c].getType() != Type.BLANK && board[r][c].getColor() == turn)
+		else if (board[r][c].getType() != Type.BLANK)// && board[r][c].getColor() == turn)
 			board[r][c].setSelected(true);
 		else
 			board[r][c].setSelected(false);
@@ -222,16 +222,37 @@ public class Board implements Cloneable {
 			else
 				Toast.makeText(context, op + " is in check", Toast.LENGTH_LONG)
 						.show();
-		}
+		}else if(isStaleMate())
+			Toast.makeText(context, "Stalemate", Toast.LENGTH_LONG).show();
 
 		setLocations();
 		setProtections();
-
+		
 		nextTurn();
 		
-		ai.resetBoard(this, turn);
-		this.board = ai.getBoard();
-		nextTurn();
+		/*if(!isMate(op))
+			aiTurn();
+		
+		if (isInCheck(s.getColor())) {
+			if (isMate(s.getColor()))
+				Toast.makeText(context, "Check mate " + op + " wins",
+						Toast.LENGTH_LONG).show();
+			else
+				Toast.makeText(context, s.getColor() + " is in check", Toast.LENGTH_LONG)
+						.show();
+		}else if(isStaleMate())
+			Toast.makeText(context, "Stalemate", Toast.LENGTH_LONG).show();*/
+	}
+	
+	public void aiTurn(){
+		try{
+			Thread.sleep(1000);
+			ai.resetBoard(this, turn);
+			this.board = ai.getBoard();
+			nextTurn();
+		}catch(Exception e){
+			aiTurn();
+		}
 	}
 
 	public void setLocations() {
@@ -827,8 +848,7 @@ public class Board implements Cloneable {
 			else
 				op = Team.WHITE;
 			
-			while (board[tempR][tempC].getType() == Type.BLANK
-					&& tempC < board[r].length
+			while (tempC < board[r].length && board[tempR][tempC].getType() == Type.BLANK
 					&& !board[tempR][tempC].isProtected(op))
 				tempC++;
 
@@ -839,8 +859,7 @@ public class Board implements Cloneable {
 			
 			tempR = r;
 			tempC = c - 1;
-			while (board[tempR][tempC].getType() == Type.BLANK
-					&& tempC > 0
+			while (tempC > 0 && board[tempR][tempC].getType() == Type.BLANK
 					&& !board[tempR][tempC].isProtected(op))
 				tempC--;
 

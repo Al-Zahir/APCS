@@ -1,0 +1,78 @@
+package com.Zeditude.APCompFinal;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AI {
+	public List<Node> start;
+	int maxType;
+	int smartIndex;
+	
+	public AI(Board b, Team t){
+		resetBoard(b, t);
+	}
+	
+	public void resetBoard(Board b, Team t){
+		start = new ArrayList<Node>();
+		smartIndex = -1;
+		maxType = 0;
+		Piece[][] board = b.getBoard();
+		
+		Piece[][] newBoard = new Piece[board.length][board[0].length];
+		
+		for(int r = 0; r < newBoard.length; r++)
+			for(int c = 0; c < newBoard[r].length; c++)
+				newBoard[r][c] = new Piece(board[r][c]);
+		
+		for(int r = 0; r < newBoard.length; r++){
+			for(int c = 0; c < newBoard[r].length; c++){
+				if(newBoard[r][c].getColor() == t){
+					Piece p = new Piece(newBoard[r][c]);
+					List<Location> loc = p.getMoveLoc();
+					for(Location l : loc){
+						start.add(createNode(new Board(newBoard, t), p, r, c, l, t, 0));
+					}
+				}
+			}
+		}
+	}
+	
+	private Node createNode(Board board, Piece p, int r, int c, Location l,
+			Team t, int counter) {
+		Team op = (t == Team.WHITE) ? Team.BLACK : Team.WHITE;
+		Piece[][] currentBoard = board.getBoard();
+		
+		Piece[][] newBoard = new Piece[currentBoard.length][currentBoard[0].length];
+		
+		for(int i = 0; i < newBoard.length; i++)
+			for(int j = 0; j < newBoard[i].length; j++)
+				newBoard[i][j] = new Piece(currentBoard[i][j]);
+		
+		if(!newBoard[l.getRow()][l.getCol()].isProtected(op)){
+			if(newBoard[l.getRow()][l.getCol()].getType().getValue() > maxType){
+				maxType = newBoard[l.getRow()][l.getCol()].getType().getValue();
+				smartIndex = start.size();
+			}
+		}else if(newBoard[l.getRow()][l.getCol()].isProtected(op)){
+			if(p.getType().getValue() <= newBoard[l.getRow()][l.getCol()].getType().getValue()){
+				int rand = (int)(Math.random() * 2)
+			}
+		}
+		
+		newBoard[l.getRow()][l.getCol()] = p;
+		newBoard[r][c] = new Piece();
+		
+		Board b = new Board(newBoard, op);
+		b.setLocations();
+		b.setProtections();
+		
+		return new Node(b, null);
+	}
+
+	public Piece[][] getBoard(){
+		if(smartIndex != -1)
+			return start.get(smartIndex).getBoard().getBoard();
+		
+		return start.get((int)(Math.random() * start.size())).getBoard().getBoard();
+	}
+}

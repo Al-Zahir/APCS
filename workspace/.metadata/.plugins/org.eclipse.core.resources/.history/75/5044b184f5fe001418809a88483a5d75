@@ -1,0 +1,14 @@
+package com.Zeditude.APCompFinal;
+
+public enum Type {
+	BLANK(0), PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING
+	
+	private final int value;
+    private Type(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
+}

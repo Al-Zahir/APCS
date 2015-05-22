@@ -3,6 +3,7 @@ package com.Zeditude.APCompFinal;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.os.Handler;
 import android.widget.Toast;
 
 public class Board implements Cloneable {
@@ -45,10 +46,10 @@ public class Board implements Cloneable {
 		board[7][4] = new Piece(Type.KING, Team.WHITE);
 
 		turn = Team.WHITE;
-		
+
 		setLocations();
 		setProtections();
-		
+
 		ai = new AI(this, turn);
 	}
 
@@ -64,6 +65,10 @@ public class Board implements Cloneable {
 
 	public int getCol() {
 		return board[0].length;
+	}
+
+	public Team getTurn() {
+		return turn;
 	}
 
 	public Piece[][] getBoard() {
@@ -106,34 +111,36 @@ public class Board implements Cloneable {
 
 		return king.isProtected(op);
 	}
-	
-	public boolean isStaleMate(){
+
+	public boolean isStaleMate() {
 		boolean kingsOnly = true;
-		
+
 		for (int r = 0; r < board.length; r++)
 			for (int c = 0; c < board[r].length; c++)
-				if(board[r][c].getType() != Type.BLANK && board[r][c].getType() != Type.KING)
+				if (board[r][c].getType() != Type.BLANK
+						&& board[r][c].getType() != Type.KING)
 					kingsOnly = false;
-		
+
 		boolean noMovesWhite = true;
 		boolean noMovesBlack = true;
-		
-		for (int r = 0; r < board.length; r++){
-			for (int c = 0; c < board[r].length; c++){
+
+		for (int r = 0; r < board.length; r++) {
+			for (int c = 0; c < board[r].length; c++) {
 				Piece p = board[r][c];
-				
-				if(p.getColor() == Team.WHITE){
-					if(p.getMoveLoc().size() > 0)
+
+				if (p.getColor() == Team.WHITE) {
+					if (p.getMoveLoc().size() > 0)
 						noMovesWhite = false;
-				}else if(p.getColor() == Team.BLACK){
-					if(p.getMoveLoc().size() > 0)
+				} else if (p.getColor() == Team.BLACK) {
+					if (p.getMoveLoc().size() > 0)
 						noMovesBlack = false;
 				}
 			}
 		}
-		
-		return (noMovesWhite && !isInCheck(Team.WHITE)) || (noMovesBlack && !isInCheck(Team.BLACK)) || kingsOnly;
-				
+
+		return (noMovesWhite && !isInCheck(Team.WHITE))
+				|| (noMovesBlack && !isInCheck(Team.BLACK)) || kingsOnly;
+
 	}
 
 	public boolean isMate(Team t) {
@@ -179,11 +186,12 @@ public class Board implements Cloneable {
 		if (r == oldR && c == oldC)
 			board[r][c].setSelected(false);
 		else if (oldR == -1 && oldC == -1) {
-			if (s.getType() != Type.BLANK)// && s.getColor() == turn)
+			if (s.getType() != Type.BLANK && s.getColor() == turn)
 				s.setSelected(true);
 		} else if (s.canMoveTo(r, c))
 			movePiece(s, oldR, oldC, r, c);
-		else if (board[r][c].getType() != Type.BLANK)// && board[r][c].getColor() == turn)
+		else if (board[r][c].getType() != Type.BLANK
+				&& board[r][c].getColor() == turn)
 			board[r][c].setSelected(true);
 		else
 			board[r][c].setSelected(false);
@@ -193,13 +201,13 @@ public class Board implements Cloneable {
 		s.setHasMoved(true);
 		board[r][c] = s;
 		board[oldR][oldC] = new Piece();
-		
-		if(s.getType() == Type.KING && Math.abs(oldC - c) > 1){
-			if(oldC < c){
+
+		if (s.getType() == Type.KING && Math.abs(oldC - c) > 1) {
+			if (oldC < c) {
 				Piece rook = board[r][c + 1];
 				board[r][c - 1] = rook;
 				board[r][c + 1] = new Piece();
-			}else{
+			} else {
 				Piece rook = board[r][c - 2];
 				board[r][c + 1] = rook;
 				board[r][c - 2] = new Piece();
@@ -222,37 +230,16 @@ public class Board implements Cloneable {
 			else
 				Toast.makeText(context, op + " is in check", Toast.LENGTH_LONG)
 						.show();
-		}else if(isStaleMate())
+		} else if (isStaleMate())
 			Toast.makeText(context, "Stalemate", Toast.LENGTH_LONG).show();
 
-		setLocations();
-		setProtections();
-		
 		nextTurn();
-		
-		/*if(!isMate(op))
-			aiTurn();
-		
-		if (isInCheck(s.getColor())) {
-			if (isMate(s.getColor()))
-				Toast.makeText(context, "Check mate " + op + " wins",
-						Toast.LENGTH_LONG).show();
-			else
-				Toast.makeText(context, s.getColor() + " is in check", Toast.LENGTH_LONG)
-						.show();
-		}else if(isStaleMate())
-			Toast.makeText(context, "Stalemate", Toast.LENGTH_LONG).show();*/
 	}
-	
-	public void aiTurn(){
-		try{
-			Thread.sleep(1000);
-			ai.resetBoard(this, turn);
-			this.board = ai.getBoard();
-			nextTurn();
-		}catch(Exception e){
-			aiTurn();
-		}
+
+	public void aiTurn() {
+		ai.resetBoard(this, turn);
+		this.board = ai.getBoard();
+		nextTurn();
 	}
 
 	public void setLocations() {
@@ -842,13 +829,14 @@ public class Board implements Cloneable {
 		if (!p.hasMoved() && !isInCheck(p.getColor())) {
 			int tempR = r, tempC = c + 1;
 			op = p.getColor();
-			
-			if(op == Team.WHITE)
+
+			if (op == Team.WHITE)
 				op = Team.BLACK;
 			else
 				op = Team.WHITE;
-			
-			while (tempC < board[r].length && board[tempR][tempC].getType() == Type.BLANK
+
+			while (tempC < board[r].length
+					&& board[tempR][tempC].getType() == Type.BLANK
 					&& !board[tempR][tempC].isProtected(op))
 				tempC++;
 
@@ -856,15 +844,14 @@ public class Board implements Cloneable {
 					&& board[tempR][tempC].getType() == Type.ROOK)
 				if (!board[tempR][tempC].hasMoved())
 					p.addMoveLoc(new Location(tempR, tempC - 1));
-			
+
 			tempR = r;
 			tempC = c - 1;
 			while (tempC > 0 && board[tempR][tempC].getType() == Type.BLANK
 					&& !board[tempR][tempC].isProtected(op))
 				tempC--;
 
-			if (tempC >= 0
-					&& board[tempR][tempC].getType() == Type.ROOK)
+			if (tempC >= 0 && board[tempR][tempC].getType() == Type.ROOK)
 				if (!board[tempR][tempC].hasMoved())
 					p.addMoveLoc(new Location(tempR, tempC + 2));
 		}

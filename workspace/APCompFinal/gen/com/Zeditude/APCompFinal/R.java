@@ -11,29 +11,33 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int blackbishop=0x7f020000;
-        public static final int blackking=0x7f020001;
-        public static final int blackknight=0x7f020002;
-        public static final int blackpawn=0x7f020003;
-        public static final int blackqueen=0x7f020004;
-        public static final int blackrook=0x7f020005;
-        public static final int blank=0x7f020006;
-        public static final int chess_symbols=0x7f020007;
-        public static final int ic_launcher=0x7f020008;
-        public static final int locate=0x7f020009;
-        public static final int selected=0x7f02000a;
-        public static final int whitebishop=0x7f02000b;
-        public static final int whiteking=0x7f02000c;
-        public static final int whiteknight=0x7f02000d;
-        public static final int whitepawn=0x7f02000e;
-        public static final int whitequeen=0x7f02000f;
-        public static final int whiterook=0x7f020010;
+        public static final int backblack=0x7f020000;
+        public static final int backwhite=0x7f020001;
+        public static final int blackbishop=0x7f020002;
+        public static final int blackking=0x7f020003;
+        public static final int blackknight=0x7f020004;
+        public static final int blackpawn=0x7f020005;
+        public static final int blackqueen=0x7f020006;
+        public static final int blackrook=0x7f020007;
+        public static final int blank=0x7f020008;
+        public static final int chess_symbols=0x7f020009;
+        public static final int ic_launcher=0x7f02000a;
+        public static final int locate=0x7f02000b;
+        public static final int selected=0x7f02000c;
+        public static final int whitebishop=0x7f02000d;
+        public static final int whiteking=0x7f02000e;
+        public static final int whiteknight=0x7f02000f;
+        public static final int whitepawn=0x7f020010;
+        public static final int whitequeen=0x7f020011;
+        public static final int whiterook=0x7f020012;
+        public static final int zeditudetech=0x7f020013;
     }
     public static final class id {
-        public static final int gridView1=0x7f060002;
-        public static final int grid_item_image=0x7f060000;
-        public static final int grid_item_image2=0x7f060001;
-        public static final int splashLayout=0x7f060003;
+        public static final int gridView1=0x7f060003;
+        public static final int grid_item_image=0x7f060001;
+        public static final int grid_item_image2=0x7f060002;
+        public static final int grid_item_imageback=0x7f060000;
+        public static final int splashLayout=0x7f060004;
     }
     public static final class layout {
         public static final int adapter=0x7f030000;

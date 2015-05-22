@@ -1,54 +1,34 @@
 package com.Zeditude.APCompFinal;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
+/**
+ * @author Al-Zahir Rahemtulla
+ *
+ */
 public class Splash extends Activity {
-
-	GridView gridView;
-	Board board;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.board);
-
-		board = new Board(this, 8, 8);
+		setContentView(R.layout.splash);
 		
-		reDraw();
+		hold();
 	}
-
-	public void reDraw() {
-		Piece[] pieces = new Piece[64];
-		Piece selected = null;
-		int index = 0;
-
-		for (int r = 0; r < board.getRow(); r++) {
-			for (int c = 0; c < board.getCol(); c++) {
-				Piece p = board.getPiece(r, c);
-				pieces[index] = p;
-				index++;
-				
-				if(p.isSelected())
-					selected = p;
-			}
+	
+	public void hold(){
+		try{
+			//Thread.sleep(3000);
+			startActivity(new Intent("com.Zeditude.APCompFinal.MAIN"));
+		}catch(Exception e){
+			hold();
 		}
-
-		gridView = (GridView) findViewById(R.id.gridView1);
-
-		gridView.setAdapter(new ImageAdapter(this, pieces, selected));
-
-		gridView.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View v,
-					int position, long id) {
-				board.select((int) (position / 8), (int) (position % 8));
-				reDraw();
-			}
-		});
 	}
 }

@@ -38,6 +38,9 @@ public class ImageAdapter extends BaseAdapter {
 			
 			ImageView imageView2 = (ImageView) gridView
 					.findViewById(R.id.grid_item_image2);
+			
+			ImageView backGround = (ImageView) gridView
+					.findViewById(R.id.grid_item_imageback);
 
 			Piece p = pieces[position];
 
@@ -90,6 +93,21 @@ public class ImageAdapter extends BaseAdapter {
 					imageView2.setImageResource(R.drawable.locate);
 				else if(p == selected)
 					imageView2.setImageResource(R.drawable.selected);
+			}
+			
+			int row = (int) (position / 8);
+			int col = (int) (position % 8);
+			
+			if(row % 2 == 0){
+				if(col % 2 == 0)
+					backGround.setImageResource(R.drawable.backblack);
+				else
+					backGround.setImageResource(R.drawable.backwhite);
+			}else{
+				if(col % 2 == 0)
+					backGround.setImageResource(R.drawable.backwhite);
+				else
+					backGround.setImageResource(R.drawable.backblack);
 			}
 
 		} else {

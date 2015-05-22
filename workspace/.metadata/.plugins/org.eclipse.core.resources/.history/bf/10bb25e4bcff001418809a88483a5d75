@@ -1,0 +1,29 @@
+package com.Zeditude.APCompFinal;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
+
+/**
+ * @author Al-Zahir Rahemtulla
+ *
+ */
+public class Splash extends Activity {
+
+	GridView gridView;
+	Board board;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.splash);
+
+		board = new Board(this, 8, 8);
+		
+		reDraw();
+	}
+}

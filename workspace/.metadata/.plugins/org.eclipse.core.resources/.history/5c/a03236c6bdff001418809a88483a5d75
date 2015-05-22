@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="5dp" >
+ 
+    <ImageView
+        android:id="@+id/grid_item_imageback"
+        android:layout_width="110px"
+        android:layout_height="110px"
+        android:layout_marginRight="10px"
+        android:src="@drawable/blank" >
+    </ImageView>
+    
+    <ImageView
+        android:id="@+id/grid_item_image"
+        android:layout_width="110px"
+        android:layout_height="110px"
+        android:layout_marginRight="10px"
+        android:src="@drawable/blank" >
+    </ImageView>
+    
+   <ImageView
+        android:id="@+id/grid_item_image2"
+        android:layout_width="125px"
+        android:layout_height="125px"
+        android:layout_marginRight="10px"
+        android:src="@drawable/blank" >
+    </ImageView>
+ 
+</FrameLayout>

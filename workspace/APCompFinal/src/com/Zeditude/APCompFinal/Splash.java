@@ -23,6 +23,10 @@ public class Splash extends Activity {
 		hold();
 	}
 	
+	/**
+	 * Will wait some time before loading the game
+	 */
+	
 	public void hold(){
 		try{
 			//Thread.sleep(3000);

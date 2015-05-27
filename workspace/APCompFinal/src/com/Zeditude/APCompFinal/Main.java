@@ -26,6 +26,10 @@ public class Main extends Activity {
 		reDraw();
 	}
 
+	/**
+	 * Will redraw the board along with all the pieces
+	 */
+	
 	public void reDraw() {
 		Piece[] pieces = new Piece[64];
 		Piece selected = null;

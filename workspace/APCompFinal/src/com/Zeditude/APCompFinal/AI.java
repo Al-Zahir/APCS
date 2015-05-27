@@ -20,6 +20,14 @@ public class AI {
 		resetBoard(b, t);
 	}
 
+	/**
+	 * The reset board method will recreate the board from the screen
+	 * and check every possible move that the ai could do and checks to see
+	 * which is the "smartest" move
+	 * @param b the current board of the screen
+	 * @param t the team of which is the ai's team
+	 */
+	
 	public void resetBoard(Board b, Team t) {
 		start = new ArrayList<Node>();
 		smartIndex = -1;
@@ -62,7 +70,7 @@ public class AI {
 					List<Location> loc = p.getMoveLoc();
 					for (Location l : loc) {
 						start.add(createNode(new Board(newBoard, t), p, r, c,
-								l, t, 0));
+								l, t));
 					}
 				}
 			}
@@ -72,8 +80,23 @@ public class AI {
 			smartIndex = (int) (Math.random() * start.size());
 	}
 
+	/**
+	 * The create node method will recreate the recreated board from the reset board method.
+	 * it will be called the exact number of times that the ai can move. It will check to see if
+	 * the current move is a good one, and will set a worldly variable called smartIndex to the
+	 * current move, so that when the board class asks for a move, it will give the smartIndex
+	 * 
+	 * @param board the recreated board of which the reset board method will use
+	 * @param p the piece that is moving
+	 * @param r the current row that the piece is on
+	 * @param c the current col that the piece is on
+	 * @param l the location of which the piece wants to move
+	 * @param t the team of the ai
+	 * @return a Node consisting of a recreated board with the ai's move on it
+	 */
+	
 	private Node createNode(Board board, Piece p, int r, int c, Location l,
-			Team t, int counter) {
+			Team t) {
 		Team op = (t == Team.WHITE) ? Team.BLACK : Team.WHITE;
 		Piece[][] currentBoard = board.getBoard();
 
@@ -96,14 +119,10 @@ public class AI {
 						smartIndex = start.size();
 					}
 				}
-			}/* else if (newBoard[l.getRow()][l.getCol()].isProtected(op)
+			} else if (newBoard[l.getRow()][l.getCol()].isProtected(op)
 					&& newBoard[l.getRow()][l.getCol()].getType() != Type.BLANK
 					&& maxType < newBoard[l.getRow()][l.getCol()].getType().getValue()) {
-				if(newBoard[l.getRow()][l.getCol()].valueProtect(t) <= newBoard[l.getRow()][l.getCol()].valueProtect(op)
-						|| newBoard[l.getRow()][l.getCol()].amountProtect(t) > newBoard[l.getRow()][l.getCol()].amountProtect(op)){
-					smartIndex = start.size();
-				}else if (p.getType().getValue() <= newBoard[l.getRow()][l.getCol()]
-						.getType().getValue()) {
+				if (p.getType().getValue() <= newBoard[l.getRow()][l.getCol()].getType().getValue()) {
 					int rand = (int) (Math.random() * 2);
 	
 					if (rand == 1
@@ -115,7 +134,7 @@ public class AI {
 						smartIndex = start.size();
 					}
 				}
-			}*/
+			}
 		}
 
 		newBoard[l.getRow()][l.getCol()] = p;
@@ -137,11 +156,16 @@ public class AI {
 		Board b = new Board(newBoard, op);
 		b.setProtections();
 		
-		if(!checkMate)
-			if (maxProtect > maxType)
-				if (b.getBoard()[maxRow][maxCol].isProtected(t) || 
-					!b.getBoard()[maxRow][maxCol].isProtected(op))
+		if(!checkMate){
+			if (maxProtect > maxType){
+				if (b.getBoard()[maxRow][maxCol].isProtected(t) || !b.getBoard()[maxRow][maxCol].isProtected(op)){
+					if(!newBoard[l.getRow()][l.getCol()].isProtected(op))
 						smartIndex = start.size();
+					else if(newBoard[l.getRow()][l.getCol()].getType().getValue() <= maxProtect)
+						smartIndex = start.size();
+				}
+			}
+		}
 		
 		b.setLocations();
 		

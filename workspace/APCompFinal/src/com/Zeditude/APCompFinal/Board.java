@@ -80,6 +80,16 @@ public class Board implements Cloneable {
 		return board[r][c];
 	}
 
+	/**
+	 * The isValid method will move the piece on a recreated board and return if the 
+	 * team of the piece is not in check.
+	 * 
+	 * @param row1 the row of which the piece wanting to move is on
+	 * @param col1 the col of which the piece wanting to move is on
+	 * @param row2 the row of which the piece wants to move on
+	 * @param col2 the col of which the piece wants to move on
+	 * @return
+	 */
 	public boolean isValid(int row1, int col1, int row2, int col2) {
 		Piece[][] board2 = new Piece[board.length][board[0].length];
 
@@ -164,6 +174,14 @@ public class Board implements Cloneable {
 			turn = Team.WHITE;
 	}
 
+	/**
+	 * The select method will check if a piece is already selected
+	 * if the selected row/col is a move location, it will move the piece to that location
+	 * 
+	 * @param r the row selected
+	 * @param c the col selected
+	 */
+	
 	public void select(int r, int c) {
 		int oldR = -1, oldC = -1;
 
@@ -198,6 +216,15 @@ public class Board implements Cloneable {
 			board[r][c].setSelected(false);
 	}
 
+	/**
+	 * 
+	 * @param s the piece to move
+	 * @param oldR the row the piece is currently on
+	 * @param oldC the col the piece is currently on
+	 * @param r the row the piece wants to move to
+	 * @param c the col the piece wants to move to
+	 */
+	
 	public void movePiece(Piece s, int oldR, int oldC, int r, int c) {
 		s.setHasMoved(true);
 		board[r][c] = s;
@@ -237,12 +264,20 @@ public class Board implements Cloneable {
 		nextTurn();
 	}
 
+	/**
+	 * Makes the ai take a turn by giving it the current board
+	 */
+	
 	public void aiTurn() {
 		ai.resetBoard(this, turn);
 		this.board = ai.getBoard();
 		nextTurn();
 	}
 
+	/**
+	 * Sets all the possible move locations for the team whos turn it is
+	 */
+	
 	public void setLocations() {
 		for (int r = 0; r < board.length; r++)
 			for (int c = 0; c < board[r].length; c++)
@@ -272,6 +307,10 @@ public class Board implements Cloneable {
 
 	}
 
+	/**
+	 * Sets all the locations that are being protected by a piece
+	 */
+	
 	public void setProtections() {
 		for (int r = 0; r < board.length; r++)
 			for (int c = 0; c < board[r].length; c++)
@@ -300,6 +339,14 @@ public class Board implements Cloneable {
 			setPieceProtection(kings.get(i), row.get(i), col.get(i));
 	}
 
+	/**
+	 * Calls the correct methods for each pieces locations
+	 * 
+	 * @param p the piece to set location
+	 * @param r the row the piece the currently on
+	 * @param c the col the piece the currently on
+	 */
+	
 	public void setPieceLocation(Piece p, int r, int c) {
 		switch (p.getType()) {
 		case PAWN:
@@ -328,6 +375,14 @@ public class Board implements Cloneable {
 		}
 	}
 
+	/**
+	 * Calls the correct methods for each pieces protections
+	 * 
+	 * @param p the piece to set location
+	 * @param r the row the piece the currently on
+	 * @param c the col the piece the currently on
+	 */
+	
 	public void setPieceProtection(Piece p, int r, int c) {
 		switch (p.getType()) {
 		case PAWN:
@@ -356,6 +411,14 @@ public class Board implements Cloneable {
 		}
 	}
 
+	/**
+	 * Sets pawn protections
+	 * 
+	 * @param p the piece to set location
+	 * @param r the row the piece the currently on
+	 * @param c the col the piece the currently on
+	 */
+	
 	public void setPawnProtect(Piece p, int r, int c) {
 		if (p.getColor() == Team.WHITE) {
 			if (r - 1 >= 0) {
@@ -374,7 +437,14 @@ public class Board implements Cloneable {
 			}
 		}
 	}
-
+	
+	/**
+	 * Sets knight protections
+	 * 
+	 * @param p the piece to set location
+	 * @param r the row the piece the currently on
+	 * @param c the col the piece the currently on
+	 */
 	public void setKnightProtect(Piece p, int r, int c) {
 		if (r + 1 < board.length) {
 			if (c + 2 < board[r].length)
@@ -409,6 +479,14 @@ public class Board implements Cloneable {
 		}
 	}
 
+	/**
+	 * Sets bishop protections
+	 * 
+	 * @param p the piece to set location
+	 * @param r the row the piece the currently on
+	 * @param c the col the piece the currently on
+	 */
+	
 	public void setBishopProtect(Piece p, int r, int c) {
 		int tempR = r + 1, tempC = c + 1;
 		while (tempR < board.length && tempC < board[tempR].length
@@ -458,6 +536,14 @@ public class Board implements Cloneable {
 			board[tempR][tempC].setProtected(true, p);
 	}
 
+	/**
+	 * Sets rook protections
+	 * 
+	 * @param p the piece to set location
+	 * @param r the row the piece the currently on
+	 * @param c the col the piece the currently on
+	 */
+	
 	public void setRookProtect(Piece p, int r, int c) {
 		int tempR = r + 1, tempC = c;
 		while (tempR < board.length
@@ -501,11 +587,27 @@ public class Board implements Cloneable {
 			board[tempR][tempC].setProtected(true, p);
 	}
 
+	/**
+	 * Sets queen protections
+	 * 
+	 * @param p the piece to set location
+	 * @param r the row the piece the currently on
+	 * @param c the col the piece the currently on
+	 */
+	
 	public void setQueenProtect(Piece p, int r, int c) {
 		setBishopProtect(p, r, c);
 		setRookProtect(p, r, c);
 	}
 
+	/**
+	 * Sets king protections
+	 * 
+	 * @param p the piece to set location
+	 * @param r the row the piece the currently on
+	 * @param c the col the piece the currently on
+	 */
+	
 	public void setKingProtect(Piece p, int r, int c) {
 		if (r + 1 < board.length) {
 			board[r + 1][c].setProtected(true, p);
@@ -534,6 +636,14 @@ public class Board implements Cloneable {
 		}
 	}
 
+	/**
+	 * Sets pawn locations
+	 * 
+	 * @param p the piece to set location
+	 * @param r the row the piece the currently on
+	 * @param c the col the piece the currently on
+	 */
+	
 	public void setPawnLoc(Piece p, int r, int c) {
 		if (p.getColor() == Team.WHITE) {
 			if (r - 1 >= 0) {
@@ -584,6 +694,14 @@ public class Board implements Cloneable {
 		}
 	}
 
+	/**
+	 * Sets knight locations
+	 * 
+	 * @param p the piece to set location
+	 * @param r the row the piece the currently on
+	 * @param c the col the piece the currently on
+	 */
+	
 	public void setKnightLoc(Piece p, int r, int c) {
 		if (r + 1 < board.length) {
 			if (c + 2 < board[r].length)
@@ -634,6 +752,14 @@ public class Board implements Cloneable {
 		}
 	}
 
+	/**
+	 * Sets bishop locations
+	 * 
+	 * @param p the piece to set location
+	 * @param r the row the piece the currently on
+	 * @param c the col the piece the currently on
+	 */
+	
 	public void setBishopLoc(Piece p, int r, int c) {
 		int tempR = r + 1, tempC = c + 1;
 		while (tempR < board.length && tempC < board[tempR].length
@@ -695,6 +821,14 @@ public class Board implements Cloneable {
 				p.addMoveLoc(new Location(tempR, tempC));
 	}
 
+	/**
+	 * Sets rook locations
+	 * 
+	 * @param p the piece to set location
+	 * @param r the row the piece the currently on
+	 * @param c the col the piece the currently on
+	 */
+	
 	public void setRookLoc(Piece p, int r, int c) {
 		int tempR = r + 1, tempC = c;
 		while (tempR < board.length
@@ -750,11 +884,27 @@ public class Board implements Cloneable {
 				p.addMoveLoc(new Location(tempR, tempC));
 	}
 
+	/**
+	 * Sets queen locations
+	 * 
+	 * @param p the piece to set location
+	 * @param r the row the piece the currently on
+	 * @param c the col the piece the currently on
+	 */
+	
 	public void setQueenLoc(Piece p, int r, int c) {
 		setBishopLoc(p, r, c);
 		setRookLoc(p, r, c);
 	}
 
+	/**
+	 * Sets king locations
+	 * 
+	 * @param p the piece to set location
+	 * @param r the row the piece the currently on
+	 * @param c the col the piece the currently on
+	 */
+	
 	public void setKingLoc(Piece p, int r, int c) {
 		Team op = p.getColor();
 

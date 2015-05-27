@@ -132,6 +132,11 @@ public class Piece implements Cloneable{
 		return protectedPieces;
 	}
 	
+	/**
+	 * @param t the team that is protecting this piece
+	 * @return the amount of pieces protecting this piece on team t
+	 */
+	
 	public int amountProtect(Team t){
 		int n = 0;
 		
@@ -141,6 +146,12 @@ public class Piece implements Cloneable{
 		
 		return n;
 	}
+	
+	/**
+	 * 
+	 * @param t the type that is protecting this piece
+	 * @return the amount of pieces of type t protecting this piece
+	 */
 	
 	public int amountProtect(Type t){
 		int n = 0;
@@ -152,6 +163,12 @@ public class Piece implements Cloneable{
 		return n;
 	}
 	
+	/**
+	 * 
+	 * @param t the team that is protecting this piece
+	 * @return the value of all pieces protecting this piece on the team t
+	 */
+	
 	public int valueProtect(Team t){
 		int value = 0;
 		
@@ -161,6 +178,12 @@ public class Piece implements Cloneable{
 		
 		return value;
 	}
+	
+	/**
+	 * 
+	 * @param t the type of piece protecting this piece
+	 * @return the value of all pieces of type t protecting this piece
+	 */
 	
 	public int valueProtect(Type t){
 		int value = 0;

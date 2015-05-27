@@ -18,6 +18,11 @@ public class ImageAdapter extends BaseAdapter {
 		this.selected = selected;
 	}
 
+	/**
+	 * The overrided method getView
+	 * it will add the background images and piece images and the location images
+	 */
+	
 	public View getView(int position, View convertView, ViewGroup parent) {
 
 		LayoutInflater inflater = (LayoutInflater) context

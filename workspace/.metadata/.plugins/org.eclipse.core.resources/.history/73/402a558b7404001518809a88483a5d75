@@ -137,11 +137,11 @@ public class AI {
 		Board b = new Board(newBoard, op);
 		b.setProtections();
 		
-		if(!checkMate)
+		/*if(!checkMate)
 			if (maxProtect > maxType)
 				if (b.getBoard()[maxRow][maxCol].isProtected(t) || 
 					!b.getBoard()[maxRow][maxCol].isProtected(op))
-						smartIndex = start.size();
+						smartIndex = start.size();*/
 		
 		b.setLocations();
 		

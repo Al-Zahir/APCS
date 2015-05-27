@@ -37,23 +37,6 @@ public class AI {
 		for (int r = 0; r < newBoard.length; r++)
 			for (int c = 0; c < newBoard[r].length; c++)
 				newBoard[r][c] = new Piece(board[r][c]);
-		
-		Team op = (t == Team.WHITE) ? Team.BLACK : Team.WHITE;
-		
-		for (int i = 0; i < newBoard.length; i++) {
-			for (int j = 0; j < newBoard[i].length; j++) {
-				if (newBoard[i][j].getColor() == t) {
-					if (!newBoard[i][j].isProtected(t) && 
-							newBoard[i][j].isProtected(op)) {
-						if (newBoard[i][j].getType().getValue() > maxProtect) {
-							maxProtect = newBoard[i][j].getType().getValue();
-							maxRow = i;
-							maxCol = j;
-						}
-					}
-				}
-			}
-		}
 
 		for (int r = 0; r < newBoard.length; r++) {
 			for (int c = 0; c < newBoard[r].length; c++) {
@@ -137,11 +120,11 @@ public class AI {
 		Board b = new Board(newBoard, op);
 		b.setProtections();
 		
-		if(!checkMate)
+		/*if(!checkMate)
 			if (maxProtect > maxType)
 				if (b.getBoard()[maxRow][maxCol].isProtected(t) || 
 					!b.getBoard()[maxRow][maxCol].isProtected(op))
-						smartIndex = start.size();
+						smartIndex = start.size();*/
 		
 		b.setLocations();
 		

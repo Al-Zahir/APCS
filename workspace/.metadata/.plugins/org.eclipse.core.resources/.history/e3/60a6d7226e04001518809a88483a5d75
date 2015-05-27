@@ -43,8 +43,8 @@ public class AI {
 		for (int i = 0; i < newBoard.length; i++) {
 			for (int j = 0; j < newBoard[i].length; j++) {
 				if (newBoard[i][j].getColor() == t) {
-					if (!newBoard[i][j].isProtected(t) && 
-							newBoard[i][j].isProtected(op)) {
+					if (newBoard[i][j].amountProtect(t) > newBoard[i][j].amountProtect(op)
+							|| newBoard[i][j].valueProtect(t) < newBoard[i][j].valueProtect(op)) {
 						if (newBoard[i][j].getType().getValue() > maxProtect) {
 							maxProtect = newBoard[i][j].getType().getValue();
 							maxRow = i;
@@ -96,13 +96,13 @@ public class AI {
 						smartIndex = start.size();
 					}
 				}
-			}/* else if (newBoard[l.getRow()][l.getCol()].isProtected(op)
+			} else if (newBoard[l.getRow()][l.getCol()].isProtected(op)
 					&& newBoard[l.getRow()][l.getCol()].getType() != Type.BLANK
 					&& maxType < newBoard[l.getRow()][l.getCol()].getType().getValue()) {
 				if(newBoard[l.getRow()][l.getCol()].valueProtect(t) <= newBoard[l.getRow()][l.getCol()].valueProtect(op)
 						|| newBoard[l.getRow()][l.getCol()].amountProtect(t) > newBoard[l.getRow()][l.getCol()].amountProtect(op)){
 					smartIndex = start.size();
-				}else if (p.getType().getValue() <= newBoard[l.getRow()][l.getCol()]
+				}/*else if (p.getType().getValue() <= newBoard[l.getRow()][l.getCol()]
 						.getType().getValue()) {
 					int rand = (int) (Math.random() * 2);
 	
@@ -114,8 +114,8 @@ public class AI {
 							.getCol()].getType().getValue()){
 						smartIndex = start.size();
 					}
-				}
-			}*/
+				}*/
+			}
 		}
 
 		newBoard[l.getRow()][l.getCol()] = p;
@@ -137,11 +137,10 @@ public class AI {
 		Board b = new Board(newBoard, op);
 		b.setProtections();
 		
-		if(!checkMate)
-			if (maxProtect > maxType)
-				if (b.getBoard()[maxRow][maxCol].isProtected(t) || 
+		if (maxProtect >= maxType)
+			if (b.getBoard()[maxRow][maxCol].isProtected(t) || 
 					!b.getBoard()[maxRow][maxCol].isProtected(op))
-						smartIndex = start.size();
+					smartIndex = start.size();
 		
 		b.setLocations();
 		

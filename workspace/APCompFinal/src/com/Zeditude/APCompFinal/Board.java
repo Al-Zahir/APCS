@@ -3,7 +3,6 @@ package com.Zeditude.APCompFinal;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.os.Handler;
 import android.widget.Toast;
 
 public class Board implements Cloneable {
@@ -47,10 +46,12 @@ public class Board implements Cloneable {
 
 		turn = Team.WHITE;
 
-		setLocations();
 		setProtections();
+		setLocations();
 
+		nextTurn();
 		ai = new AI(this, turn);
+		nextTurn();
 	}
 
 	public Board(Piece[][] b, Team t) {
@@ -214,8 +215,8 @@ public class Board implements Cloneable {
 			}
 		}
 
-		setLocations();
 		setProtections();
+		setLocations();
 
 		Team op = s.getColor();
 		if (op == Team.WHITE)
@@ -274,7 +275,7 @@ public class Board implements Cloneable {
 	public void setProtections() {
 		for (int r = 0; r < board.length; r++)
 			for (int c = 0; c < board[r].length; c++)
-				board[r][c].setProtected(false, Team.BLANK);
+				board[r][c].setProtected(false, new Piece());
 
 		ArrayList<Piece> kings = new ArrayList<Piece>();
 		ArrayList<Integer> row = new ArrayList<Integer>();
@@ -359,17 +360,17 @@ public class Board implements Cloneable {
 		if (p.getColor() == Team.WHITE) {
 			if (r - 1 >= 0) {
 				if (c + 1 < board[r].length)
-					board[r - 1][c + 1].setProtected(true, p.getColor());
+					board[r - 1][c + 1].setProtected(true, p);
 
 				if (c - 1 >= 0)
-					board[r - 1][c - 1].setProtected(true, p.getColor());
+					board[r - 1][c - 1].setProtected(true, p);
 			}
 		} else {
 			if (r + 1 < board.length) {
 				if (c + 1 < board.length)
-					board[r + 1][c + 1].setProtected(true, p.getColor());
+					board[r + 1][c + 1].setProtected(true, p);
 				if (c - 1 >= 0)
-					board[r + 1][c - 1].setProtected(true, p.getColor());
+					board[r + 1][c - 1].setProtected(true, p);
 			}
 		}
 	}
@@ -377,33 +378,33 @@ public class Board implements Cloneable {
 	public void setKnightProtect(Piece p, int r, int c) {
 		if (r + 1 < board.length) {
 			if (c + 2 < board[r].length)
-				board[r + 1][c + 2].setProtected(true, p.getColor());
+				board[r + 1][c + 2].setProtected(true, p);
 
 			if (c - 2 >= 0)
-				board[r + 1][c - 2].setProtected(true, p.getColor());
+				board[r + 1][c - 2].setProtected(true, p);
 
 			if (r + 2 < board.length) {
 				if (c + 1 < board[r].length)
-					board[r + 2][c + 1].setProtected(true, p.getColor());
+					board[r + 2][c + 1].setProtected(true, p);
 
 				if (c - 1 >= 0)
-					board[r + 2][c - 1].setProtected(true, p.getColor());
+					board[r + 2][c - 1].setProtected(true, p);
 			}
 		}
 
 		if (r - 1 >= 0) {
 			if (c + 2 < board[r].length)
-				board[r - 1][c + 2].setProtected(true, p.getColor());
+				board[r - 1][c + 2].setProtected(true, p);
 
 			if (c - 2 >= 0)
-				board[r - 1][c - 2].setProtected(true, p.getColor());
+				board[r - 1][c - 2].setProtected(true, p);
 
 			if (r - 2 >= 0) {
 				if (c + 1 < board[r].length)
-					board[r - 2][c + 1].setProtected(true, p.getColor());
+					board[r - 2][c + 1].setProtected(true, p);
 
 				if (c - 1 >= 0)
-					board[r - 2][c - 1].setProtected(true, p.getColor());
+					board[r - 2][c - 1].setProtected(true, p);
 			}
 		}
 	}
@@ -412,92 +413,92 @@ public class Board implements Cloneable {
 		int tempR = r + 1, tempC = c + 1;
 		while (tempR < board.length && tempC < board[tempR].length
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 			tempR++;
 			tempC++;
 		}
 
 		if (tempR < board.length && tempC < board[tempR].length)
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 
 		tempR = r - 1;
 		tempC = c + 1;
 		while (tempR >= 0 && tempC < board[tempR].length
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 			tempR--;
 			tempC++;
 		}
 
 		if (tempR >= 0 && tempC < board[tempR].length)
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 
 		tempR = r + 1;
 		tempC = c - 1;
 		while (tempR < board.length && tempC >= 0
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 			tempR++;
 			tempC--;
 		}
 
 		if (tempR < board.length && tempC >= 0)
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 
 		tempR = r - 1;
 		tempC = c - 1;
 		while (tempR >= 0 && tempC >= 0
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 			tempR--;
 			tempC--;
 		}
 
 		if (tempR >= 0 && tempC >= 0)
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 	}
 
 	public void setRookProtect(Piece p, int r, int c) {
 		int tempR = r + 1, tempC = c;
 		while (tempR < board.length
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 			tempR++;
 		}
 
 		if (tempR < board.length)
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 
 		tempR = r - 1;
 		tempC = c;
 		while (tempR >= 0 && board[tempR][tempC].getType() == Type.BLANK) {
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 			tempR--;
 		}
 
 		if (tempR >= 0)
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 
 		tempR = r;
 		tempC = c + 1;
 		while (tempC < board[tempR].length
 				&& board[tempR][tempC].getType() == Type.BLANK) {
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 			tempC++;
 		}
 
 		if (tempC < board[tempR].length)
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 
 		tempR = r;
 		tempC = c - 1;
 		while (tempC >= 0 && board[tempR][tempC].getType() == Type.BLANK) {
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 			tempC--;
 		}
 
 		if (tempC >= 0)
-			board[tempR][tempC].setProtected(true, p.getColor());
+			board[tempR][tempC].setProtected(true, p);
 	}
 
 	public void setQueenProtect(Piece p, int r, int c) {
@@ -507,29 +508,29 @@ public class Board implements Cloneable {
 
 	public void setKingProtect(Piece p, int r, int c) {
 		if (r + 1 < board.length) {
-			board[r + 1][c].setProtected(true, p.getColor());
+			board[r + 1][c].setProtected(true, p);
 
 			if (c + 1 < board[r].length)
-				board[r + 1][c + 1].setProtected(true, p.getColor());
+				board[r + 1][c + 1].setProtected(true, p);
 
 			if (c - 1 >= 0)
-				board[r + 1][c - 1].setProtected(true, p.getColor());
+				board[r + 1][c - 1].setProtected(true, p);
 		}
 
 		if (c + 1 < board[r].length)
-			board[r][c + 1].setProtected(true, p.getColor());
+			board[r][c + 1].setProtected(true, p);
 
 		if (c - 1 >= 0)
-			board[r][c - 1].setProtected(true, p.getColor());
+			board[r][c - 1].setProtected(true, p);
 
 		if (r - 1 >= 0) {
-			board[r - 1][c].setProtected(true, p.getColor());
+			board[r - 1][c].setProtected(true, p);
 
 			if (c + 1 < board[r].length)
-				board[r - 1][c + 1].setProtected(true, p.getColor());
+				board[r - 1][c + 1].setProtected(true, p);
 
 			if (c - 1 >= 0)
-				board[r - 1][c - 1].setProtected(true, p.getColor());
+				board[r - 1][c - 1].setProtected(true, p);
 		}
 	}
 

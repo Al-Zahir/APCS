@@ -8,7 +8,7 @@ public class Piece implements Cloneable{
 	private boolean isSelected;
 	private boolean hasMoved;
 	private boolean isProtected;
-	private ArrayList<Team> protectedColors;
+	private ArrayList<Piece> protectedPieces;
 
 	public Piece() {
 		type = Type.BLANK;
@@ -17,7 +17,7 @@ public class Piece implements Cloneable{
 		moveLoc = new ArrayList<Location>();
 		hasMoved = false;
 		isProtected = false;
-		protectedColors = new ArrayList<Team>();
+		protectedPieces = new ArrayList<Piece>();
 	}
 
 	public Piece(Type t, Team c) {
@@ -27,7 +27,7 @@ public class Piece implements Cloneable{
 		isSelected = false;
 		hasMoved = false;
 		isProtected = false;
-		protectedColors = new ArrayList<Team>();
+		protectedPieces = new ArrayList<Piece>();
 	}
 	
 	public Piece(Piece p){
@@ -47,7 +47,7 @@ public class Piece implements Cloneable{
 		else
 			isProtected = false;
 		
-		protectedColors = p.getProtectedColors();
+		protectedPieces = p.getProtectedPieces();
 	}
 
 	public Type getType() {
@@ -103,23 +103,73 @@ public class Piece implements Cloneable{
 	public boolean isProtected(Team c){
 		boolean flag = false;
 		
-		for(Team t : protectedColors)
-			if(t == c)
+		for(Piece p : protectedPieces)
+			if(p.getColor() == c)
 				flag = true;
 		
 		return isProtected && flag;
 	}
 	
-	public void setProtected(boolean b, Team t){
-		isProtected = b;
-		protectedColors.add(t);
+	public boolean isProtected(Type c){
+		boolean flag = false;
 		
-		if(!b)
-			protectedColors = new ArrayList<Team>();
+		for(Piece p : protectedPieces)
+			if(p.getType() == c)
+				flag = true;
+		
+		return isProtected && flag;
 	}
 	
-	public ArrayList<Team> getProtectedColors(){
-		return protectedColors;
+	public void setProtected(boolean b, Piece p){
+		isProtected = b;
+		protectedPieces.add(p);
+		
+		if(!b)
+			protectedPieces = new ArrayList<Piece>();
+	}
+	
+	public ArrayList<Piece> getProtectedPieces(){
+		return protectedPieces;
+	}
+	
+	public int amountProtect(Team t){
+		int n = 0;
+		
+		for(Piece p : protectedPieces)
+			if(p.getColor() == t)
+				n++;
+		
+		return n;
+	}
+	
+	public int amountProtect(Type t){
+		int n = 0;
+		
+		for(Piece p : protectedPieces)
+			if(p.getType() == t)
+				n++;
+		
+		return n;
+	}
+	
+	public int valueProtect(Team t){
+		int value = 0;
+		
+		for(Piece p : protectedPieces)
+			if(p.getColor() == t)
+				value += p.getType().getValue();
+		
+		return value;
+	}
+	
+	public int valueProtect(Type t){
+		int value = 0;
+		
+		for(Piece p : protectedPieces)
+			if(p.getType() == t)
+				value += p.getType().getValue();
+		
+		return value;
 	}
 	
 	public void removeLocations(){

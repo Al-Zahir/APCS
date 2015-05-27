@@ -100,14 +100,14 @@ public class ImageAdapter extends BaseAdapter {
 			
 			if(row % 2 == 0){
 				if(col % 2 == 0)
-					backGround.setImageResource(R.drawable.backblack);
-				else
 					backGround.setImageResource(R.drawable.backwhite);
+				else
+					backGround.setImageResource(R.drawable.backblack);
 			}else{
 				if(col % 2 == 0)
-					backGround.setImageResource(R.drawable.backwhite);
-				else
 					backGround.setImageResource(R.drawable.backblack);
+				else
+					backGround.setImageResource(R.drawable.backwhite);
 			}
 
 		} else {

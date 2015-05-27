@@ -1,0 +1,150 @@
+package com.Zeditude.APCompFinal;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AI {
+	public List<Node> start;
+	int maxType;
+	int minType;
+	int smartIndex;
+	int maxProtect;
+	int maxRow;
+	int maxCol;
+	boolean freePiece;
+	boolean protect;
+	boolean attack;
+
+	public AI(Board b, Team t) {
+		resetBoard(b, t);
+	}
+
+	public void resetBoard(Board b, Team t) {
+		start = new ArrayList<Node>();
+		smartIndex = -1;
+		maxType = -1;
+		minType = 7;
+		maxProtect = -1;
+		maxRow = -1;
+		maxCol = -1;
+
+		Piece[][] board = b.getBoard();
+
+		Piece[][] newBoard = new Piece[board.length][board[0].length];
+
+		for (int r = 0; r < newBoard.length; r++)
+			for (int c = 0; c < newBoard[r].length; c++)
+				newBoard[r][c] = new Piece(board[r][c]);
+
+		for (int r = 0; r < newBoard.length; r++) {
+			for (int c = 0; c < newBoard[r].length; c++) {
+				if (newBoard[r][c].getColor() == t) {
+					Piece p = new Piece(newBoard[r][c]);
+					List<Location> loc = p.getMoveLoc();
+					for (Location l : loc) {
+						start.add(createNode(new Board(newBoard, t), p, r, c,
+								l, t, 0));
+					}
+				}
+			}
+		}
+
+		if (smartIndex == -1)
+			smartIndex = (int) (Math.random() * start.size());
+	}
+
+	private Node createNode(Board board, Piece p, int r, int c, Location l,
+			Team t, int counter) {
+		Team op = (t == Team.WHITE) ? Team.BLACK : Team.WHITE;
+		Piece[][] currentBoard = board.getBoard();
+
+		Piece[][] newBoard = new Piece[currentBoard.length][currentBoard[0].length];
+
+		for (int i = 0; i < newBoard.length; i++)
+			for (int j = 0; j < newBoard[i].length; j++)
+				newBoard[i][j] = new Piece(currentBoard[i][j]);
+
+		if (!newBoard[l.getRow()][l.getCol()].isProtected(op)
+				&& newBoard[l.getRow()][l.getCol()].getType() != Type.BLANK
+				&& maxProtect < newBoard[l.getRow()][l.getCol()].getType().getValue()) {
+			if (newBoard[l.getRow()][l.getCol()].getType().getValue() > maxType
+					|| p.getType().getValue() < minType) {
+				minType = p.getType().getValue();
+				maxType = newBoard[l.getRow()][l.getCol()].getType().getValue();
+				smartIndex = start.size();
+				freePiece = true;
+			}
+		} else if (newBoard[l.getRow()][l.getCol()].isProtected(op)
+				&& newBoard[l.getRow()][l.getCol()].getType() != Type.BLANK
+				&& minType == -1 && maxType == 7
+				&& maxProtect != -1) {
+			if (p.getType().getValue() <= newBoard[l.getRow()][l.getCol()]
+					.getType().getValue()) {
+				int rand = (int) (Math.random() * 2);
+
+				if (rand == 1
+						&& p.getType().getValue() == newBoard[l.getRow()][l
+								.getCol()].getType().getValue()){
+					smartIndex = start.size();
+					protect = true;
+				}else if (p.getType().getValue() < newBoard[l.getRow()][l
+						.getCol()].getType().getValue()){
+					smartIndex = start.size();
+					protect = true;
+				}
+			}
+		}else if(!protect && !freePiece){
+			if(!newBoard[l.getRow()][l.getCol()].isProtected(op) ||
+					newBoard[l.getRow()][l.getCol()].amountProtect(t) > newBoard[l.getRow()][l.getCol()].amountProtect(op))
+		}
+
+		for (int i = 0; i < newBoard.length; i++) {
+			for (int j = 0; j < newBoard[i].length; j++) {
+				if (newBoard[i][j].getColor() == t) {
+					if (!newBoard[i][j].isProtected(t)
+							&& newBoard[i][j].isProtected(op)) {
+						if (newBoard[i][j].getType().getValue() > maxProtect) {
+							maxProtect = newBoard[i][j].getType().getValue();
+							maxRow = i;
+							maxCol = j;
+						}
+					}
+				}
+			}
+		}
+
+		newBoard[l.getRow()][l.getCol()] = p;
+		newBoard[r][c] = new Piece();
+		
+		for (int i = 0; i < newBoard.length; i++) {
+			for (int j = 0; j < newBoard[i].length; j++) {
+				if (newBoard[i][j].getColor() == t) {
+					if (!newBoard[i][j].isProtected(t)
+							&& newBoard[i][j].isProtected(op)) {
+						if (newBoard[i][j].getType().getValue() > maxProtect) {
+							maxProtect = newBoard[i][j].getType().getValue();
+							maxRow = i;
+							maxCol = j;
+						}
+					}
+				}
+			}
+		}
+
+		Board b = new Board(newBoard, op);
+		b.setProtections();
+		
+		if (maxProtect != -1)
+			if (b.getBoard()[maxRow][maxCol].isProtected(t) || 
+					!b.getBoard()[maxRow][maxCol].isProtected(op))
+					smartIndex = start.size();
+		
+		b.setLocations();
+
+		return new Node(b, null);
+	}
+
+	public Piece[][] getBoard() {
+		return start.get(smartIndex).getBoard().getBoard();
+	}
+}

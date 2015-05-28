@@ -175,7 +175,7 @@ public class Piece implements Cloneable{
 		}
 		
 		for(int k = 0; k < pieces.size() - 1; k++)
-			value += pieces.get(k).getType().getValue();
+			
 		
 		return value;
 	}

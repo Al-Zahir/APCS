@@ -3,8 +3,6 @@ package com.Zeditude.APCompFinal;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.widget.Toast;
-
 public class AI {
 	public List<Node> start;
 	int maxType;
@@ -15,26 +13,22 @@ public class AI {
 	int maxProtect;
 	int maxRow;
 	int maxCol;
-
-	// boolean freePiece;
-	// boolean protect;
-	// boolean attack;
+	//boolean freePiece;
+	//boolean protect;
+	//boolean attack;
 
 	public AI(Board b, Team t) {
 		resetBoard(b, t);
 	}
 
 	/**
-	 * The reset board method will recreate the board from the screen and check
-	 * every possible move that the ai could do and checks to see which is the
-	 * "smartest" move
-	 * 
-	 * @param b
-	 *            the current board of the screen
-	 * @param t
-	 *            the team of which is the ai's team
+	 * The reset board method will recreate the board from the screen
+	 * and check every possible move that the ai could do and checks to see
+	 * which is the "smartest" move
+	 * @param b the current board of the screen
+	 * @param t the team of which is the ai's team
 	 */
-
+	
 	public void resetBoard(Board b, Team t) {
 		start = new ArrayList<Node>();
 		possibleSmart = new ArrayList<Integer>();
@@ -46,8 +40,6 @@ public class AI {
 		maxRow = -1;
 		maxCol = -1;
 
-		b.setProtections();
-		b.setLocations();
 		Piece[][] board = b.getBoard();
 
 		Piece[][] newBoard = new Piece[board.length][board[0].length];
@@ -55,18 +47,16 @@ public class AI {
 		for (int r = 0; r < newBoard.length; r++)
 			for (int c = 0; c < newBoard[r].length; c++)
 				newBoard[r][c] = new Piece(board[r][c]);
-
+		
 		Team op = (t == Team.WHITE) ? Team.BLACK : Team.WHITE;
-
+		
 		for (int i = 0; i < newBoard.length; i++) {
 			for (int j = 0; j < newBoard[i].length; j++) {
 				if (newBoard[i][j].getColor() == t) {
-					if ((!newBoard[i][j].isProtected(t) && newBoard[i][j]
-							.isProtected(op))
-							|| newBoard[i][j].amountProtect(t) < newBoard[i][j]
-									.amountProtect(op)) {
-						if (newBoard[i][j].valueProtect(t) > maxProtect) {
-							maxProtect = newBoard[i][j].valueProtect(t);
+					if (!newBoard[i][j].isProtected(t) && 
+							newBoard[i][j].isProtected(op)) {
+						if (newBoard[i][j].getType().getValue() > maxProtect) {
+							maxProtect = newBoard[i][j].getType().getValue();
 							maxRow = i;
 							maxCol = j;
 						}
@@ -88,8 +78,8 @@ public class AI {
 			}
 		}
 
-		if (smartIndex == -1) {
-			if (possibleSmart.size() > 0)
+		if (smartIndex == -1){
+			if(possibleSmart.size() > 0)
 				smartIndex = (int) (Math.random() * possibleSmart.size());
 			else
 				smartIndex = (int) (Math.random() * start.size());
@@ -97,27 +87,20 @@ public class AI {
 	}
 
 	/**
-	 * The create node method will recreate the recreated board from the reset
-	 * board method. it will be called the exact number of times that the ai can
-	 * move. It will check to see if the current move is a good one, and will
-	 * set a worldly variable called smartIndex to the current move, so that
-	 * when the board class asks for a move, it will give the smartIndex
+	 * The create node method will recreate the recreated board from the reset board method.
+	 * it will be called the exact number of times that the ai can move. It will check to see if
+	 * the current move is a good one, and will set a worldly variable called smartIndex to the
+	 * current move, so that when the board class asks for a move, it will give the smartIndex
 	 * 
-	 * @param board
-	 *            the recreated board of which the reset board method will use
-	 * @param p
-	 *            the piece that is moving
-	 * @param r
-	 *            the current row that the piece is on
-	 * @param c
-	 *            the current col that the piece is on
-	 * @param l
-	 *            the location of which the piece wants to move
-	 * @param t
-	 *            the team of the ai
+	 * @param board the recreated board of which the reset board method will use
+	 * @param p the piece that is moving
+	 * @param r the current row that the piece is on
+	 * @param c the current col that the piece is on
+	 * @param l the location of which the piece wants to move
+	 * @param t the team of the ai
 	 * @return a Node consisting of a recreated board with the ai's move on it
 	 */
-
+	
 	private Node createNode(Board board, Piece p, int r, int c, Location l,
 			Team t) {
 		Team op = (t == Team.WHITE) ? Team.BLACK : Team.WHITE;
@@ -129,35 +112,40 @@ public class AI {
 			for (int j = 0; j < newBoard[i].length; j++)
 				newBoard[i][j] = new Piece(currentBoard[i][j]);
 
-		if (!checkMate) {
+		if(!checkMate){
 			if (!newBoard[l.getRow()][l.getCol()].isProtected(op)
 					&& newBoard[l.getRow()][l.getCol()].getType() != Type.BLANK) {
 				if (newBoard[l.getRow()][l.getCol()].getType().getValue() > maxType) {
 					minType = p.getType().getValue();
-					maxType = newBoard[l.getRow()][l.getCol()].getType()
-							.getValue();
+					maxType = newBoard[l.getRow()][l.getCol()].getType().getValue();
 					smartIndex = start.size();
-				} else if (newBoard[l.getRow()][l.getCol()].getType()
-						.getValue() == maxType) {
-					if (p.getType().getValue() < minType) {
+				}else if(newBoard[l.getRow()][l.getCol()].getType().getValue() == maxType){
+					if(p.getType().getValue() < minType){
 						minType = p.getType().getValue();
 						smartIndex = start.size();
 					}
 				}
 			} else if (newBoard[l.getRow()][l.getCol()].isProtected(op)
 					&& newBoard[l.getRow()][l.getCol()].getType() != Type.BLANK
-					&& maxType < newBoard[l.getRow()][l.getCol()]
-							.valueProtect(op)) {
-				if (newBoard[l.getRow()][l.getCol()].amountProtect(t) >= newBoard[l
-						.getRow()][l.getCol()].amountProtect(op)) {
-					maxType = newBoard[l.getRow()][l.getCol()].valueProtect(op);
-					if (p.getType().getValue() < minType) {
-						minType = p.getType().getValue();
+					&& maxType < newBoard[l.getRow()][l.getCol()].getType().getValue()) {
+				if (p.getType().getValue() <= newBoard[l.getRow()][l.getCol()].getType().getValue()) {
+					int rand = (int) (Math.random() * 2);
+	
+					if (rand == 1
+							&& p.getType().getValue() == newBoard[l.getRow()][l
+									.getCol()].getType().getValue()){
+						maxType = newBoard[l.getRow()][l.getCol()].getType().getValue();
+						smartIndex = start.size();
+					}else if (p.getType().getValue() < newBoard[l.getRow()][l
+							.getCol()].getType().getValue()){
+						maxType = newBoard[l.getRow()][l.getCol()].getType().getValue();
 						smartIndex = start.size();
 					}
 				}
-			} else if (maxType == -1) {
-				if (!newBoard[l.getRow()][l.getCol()].isProtected(op))
+			}else if(maxType == -1){
+				if(!newBoard[l.getRow()][l.getCol()].isProtected(op))
+					possibleSmart.add(start.size());
+				else if(newBoard[l.getRow()][l.getCol()].isProtected(t))
 					possibleSmart.add(start.size());
 			}
 		}
@@ -165,7 +153,7 @@ public class AI {
 		newBoard[l.getRow()][l.getCol()] = p;
 		newBoard[r][c] = new Piece();
 		p.setHasMoved(true);
-
+		
 		if (p.getType() == Type.KING && Math.abs(c - l.getCol()) > 1) {
 			if (c < l.getCol()) {
 				Piece rook = newBoard[l.getRow()][l.getCol() + 1];
@@ -177,27 +165,25 @@ public class AI {
 				newBoard[l.getRow()][l.getCol() - 2] = new Piece();
 			}
 		}
-
+		
 		Board b = new Board(newBoard, op);
 		b.setProtections();
-
-		if (!checkMate) {
-			if (maxProtect > maxType) {
-				if (b.getBoard()[maxRow][maxCol].isProtected(t)
-						|| !b.getBoard()[maxRow][maxCol].isProtected(op)) {
-					if (!newBoard[l.getRow()][l.getCol()].isProtected(op))
+		
+		if(!checkMate){
+			if (maxProtect > maxType){
+				if (b.getBoard()[maxRow][maxCol].isProtected(t) || !b.getBoard()[maxRow][maxCol].isProtected(op)){
+					if(!newBoard[l.getRow()][l.getCol()].isProtected(op))
 						smartIndex = start.size();
-					else if (newBoard[l.getRow()][l.getCol()].getType()
-							.getValue() <= maxProtect)
+					else if(newBoard[l.getRow()][l.getCol()].getType().getValue() <= maxProtect)
 						smartIndex = start.size();
 				}
 			}
 		}
-
+		
 		b.setLocations();
-
-		if (b.isInCheck(op)) {
-			if (b.isMate(op)) {
+		
+		if(b.isInCheck(op)){
+			if(b.isMate(op)){
 				smartIndex = start.size();
 				checkMate = true;
 			}

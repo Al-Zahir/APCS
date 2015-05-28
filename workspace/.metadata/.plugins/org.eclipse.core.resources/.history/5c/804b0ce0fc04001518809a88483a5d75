@@ -3,8 +3,6 @@ package com.Zeditude.APCompFinal;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.widget.Toast;
-
 public class AI {
 	public List<Node> start;
 	int maxType;
@@ -151,6 +149,7 @@ public class AI {
 				if (newBoard[l.getRow()][l.getCol()].amountProtect(t) >= newBoard[l
 						.getRow()][l.getCol()].amountProtect(op)) {
 					maxType = newBoard[l.getRow()][l.getCol()].valueProtect(op);
+					smartIndex = start.size();
 					if (p.getType().getValue() < minType) {
 						minType = p.getType().getValue();
 						smartIndex = start.size();

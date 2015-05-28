@@ -150,7 +150,7 @@ public class Piece implements Cloneable{
 	/**
 	 * 
 	 * @param t the team that is protecting this piece
-	 * @return the value of all pieces that might die on the team t
+	 * @return the value of all pieces protecting this piece on the team t
 	 */
 	
 	public int valueProtect(Team t){
@@ -174,8 +174,7 @@ public class Piece implements Cloneable{
 			pieces.set(min, temp);
 		}
 		
-		for(int k = 0; k < pieces.size() - 1; k++)
-			value += pieces.get(k).getType().getValue();
+		for(int i = 0; i < )
 		
 		return value;
 	}

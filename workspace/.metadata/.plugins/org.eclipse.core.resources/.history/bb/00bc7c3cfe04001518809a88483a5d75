@@ -149,33 +149,50 @@ public class Piece implements Cloneable{
 	
 	/**
 	 * 
+	 * @param t the type that is protecting this piece
+	 * @return the amount of pieces of type t protecting this piece
+	 */
+	
+	public int amountProtect(Type t){
+		int n = 0;
+		
+		for(Piece p : protectedPieces)
+			if(p.getType() == t)
+				n++;
+		
+		return n;
+	}
+	
+	/**
+	 * 
 	 * @param t the team that is protecting this piece
-	 * @return the value of all pieces that might die on the team t
+	 * @return the value of all pieces protecting this piece on the team t
 	 */
 	
 	public int valueProtect(Team t){
 		int value = 0;
 		
-		ArrayList<Piece> pieces = new ArrayList<Piece>();
+		List<Piece> pieces = new ArrayList<Piece>();
 		
 		for(Piece p : protectedPieces)
 			if(p.getColor() == t)
-				pieces.add(p);
+				value += p.getType().getValue();
 		
-		for(int i = 0; i < pieces.size() - 1; i++){
-			int min = i;
-			for(int j = i + 1; j < pieces.size(); j++){
-				if(pieces.get(j).getType().getValue() < pieces.get(min).getType().getValue())
-					min = j;
-			} 
-			
-			Piece temp = pieces.get(i);
-			pieces.set(i, pieces.get(min));
-			pieces.set(min, temp);
-		}
+		return value;
+	}
+	
+	/**
+	 * 
+	 * @param t the type of piece protecting this piece
+	 * @return the value of all pieces of type t protecting this piece
+	 */
+	
+	public int valueProtect(Type t){
+		int value = 0;
 		
-		for(int k = 0; k < pieces.size() - 1; k++)
-			value += pieces.get(k).getType().getValue();
+		for(Piece p : protectedPieces)
+			if(p.getType() == t)
+				value += p.getType().getValue();
 		
 		return value;
 	}

@@ -151,6 +151,7 @@ public class AI {
 				if (newBoard[l.getRow()][l.getCol()].amountProtect(t) >= newBoard[l
 						.getRow()][l.getCol()].amountProtect(op)) {
 					maxType = newBoard[l.getRow()][l.getCol()].valueProtect(op);
+					smartIndex = start.size();
 					if (p.getType().getValue() < minType) {
 						minType = p.getType().getValue();
 						smartIndex = start.size();

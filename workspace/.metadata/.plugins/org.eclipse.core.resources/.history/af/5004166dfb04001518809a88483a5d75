@@ -3,8 +3,6 @@ package com.Zeditude.APCompFinal;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.widget.Toast;
-
 public class AI {
 	public List<Node> start;
 	int maxType;
@@ -46,8 +44,6 @@ public class AI {
 		maxRow = -1;
 		maxCol = -1;
 
-		b.setProtections();
-		b.setLocations();
 		Piece[][] board = b.getBoard();
 
 		Piece[][] newBoard = new Piece[board.length][board[0].length];
@@ -151,13 +147,12 @@ public class AI {
 				if (newBoard[l.getRow()][l.getCol()].amountProtect(t) >= newBoard[l
 						.getRow()][l.getCol()].amountProtect(op)) {
 					maxType = newBoard[l.getRow()][l.getCol()].valueProtect(op);
-					if (p.getType().getValue() < minType) {
-						minType = p.getType().getValue();
-						smartIndex = start.size();
-					}
+					smartIndex = start.size();
 				}
 			} else if (maxType == -1) {
 				if (!newBoard[l.getRow()][l.getCol()].isProtected(op))
+					possibleSmart.add(start.size());
+				else if (newBoard[l.getRow()][l.getCol()].isProtected(t))
 					possibleSmart.add(start.size());
 			}
 		}

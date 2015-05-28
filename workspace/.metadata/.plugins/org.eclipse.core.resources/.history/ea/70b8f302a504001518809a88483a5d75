@@ -8,7 +8,6 @@ public class AI {
 	int maxType;
 	int minType;
 	int smartIndex;
-	List<Integer> possibleSmart;
 	boolean checkMate;
 	int maxProtect;
 	int maxRow;
@@ -31,7 +30,6 @@ public class AI {
 	
 	public void resetBoard(Board b, Team t) {
 		start = new ArrayList<Node>();
-		possibleSmart = new ArrayList<Integer>();
 		smartIndex = -1;
 		maxType = -1;
 		minType = 7;
@@ -78,9 +76,8 @@ public class AI {
 			}
 		}
 
-		if (smartIndex == -1){
-			smartIndex = (int) (Math.random() * possibleSmart.size());
-		}
+		if (smartIndex == -1)
+			smartIndex = (int) (Math.random() * start.size());
 	}
 
 	/**
@@ -139,12 +136,7 @@ public class AI {
 						smartIndex = start.size();
 					}
 				}
-			}else if(maxType == -1){
-				if(!newBoard[l.getRow()][l.getCol()].isProtected(op)){
-					possibleSmart.add(start.size());
-				}else if(newBoard[l.getRow()][l.getCol()].isProtected(t))
-					possibleSmart.add(start.size());
-			}
+			}else if(maxType == -1)
 		}
 
 		newBoard[l.getRow()][l.getCol()] = p;

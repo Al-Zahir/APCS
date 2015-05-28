@@ -143,7 +143,6 @@ public class AI {
 				if(!newBoard[l.getRow()][l.getCol()].isProtected(op)){
 					possibleSmart.add(start.size());
 				}else if(newBoard[l.getRow()][l.getCol()].isProtected(t))
-					possibleSmart.add(start.size());
 			}
 		}
 

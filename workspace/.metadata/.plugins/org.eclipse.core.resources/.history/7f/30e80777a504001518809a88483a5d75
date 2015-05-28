@@ -79,7 +79,10 @@ public class AI {
 		}
 
 		if (smartIndex == -1){
-			smartIndex = (int) (Math.random() * possibleSmart.size());
+			if(possibleSmart.size() == 0)
+				smartIndex = (int) (Math.random() * start.size());
+			else
+				smartIndex = (int) (Math.random() * possibleSmart.size())
 		}
 	}
 
@@ -141,9 +144,8 @@ public class AI {
 				}
 			}else if(maxType == -1){
 				if(!newBoard[l.getRow()][l.getCol()].isProtected(op)){
-					possibleSmart.add(start.size());
-				}else if(newBoard[l.getRow()][l.getCol()].isProtected(t))
-					possibleSmart.add(start.size());
+					
+				}
 			}
 		}
 

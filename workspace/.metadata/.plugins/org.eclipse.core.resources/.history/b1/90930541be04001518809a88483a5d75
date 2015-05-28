@@ -142,8 +142,7 @@ public class AI {
 			}else if(maxType == -1){
 				if(!newBoard[l.getRow()][l.getCol()].isProtected(op)){
 					possibleSmart.add(start.size());
-				}else if(newBoard[l.getRow()][l.getCol()].isProtected(t))
-					possibleSmart.add(start.size());
+				}
 			}
 		}
 

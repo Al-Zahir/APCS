@@ -1,0 +1,204 @@
+package com.Zeditude.APCompFinal;
+import java.util.ArrayList;
+
+public class Piece implements Cloneable{
+	private Type type;
+	private ArrayList<Location> moveLoc;
+	private Team color;
+	private boolean isSelected;
+	private boolean hasMoved;
+	private boolean isProtected;
+	private ArrayList<Piece> protectedPieces;
+	private ArrayList<Piece> protecting;
+
+	public Piece() {
+		type = Type.BLANK;
+		color = Team.BLANK;
+		isSelected = false;
+		moveLoc = new ArrayList<Location>();
+		hasMoved = false;
+		isProtected = false;
+		protectedPieces = new ArrayList<Piece>();
+		protecting = new ArrayList<Piece>();
+	}
+
+	public Piece(Type t, Team c) {
+		type = t;
+		color = c;
+		moveLoc = new ArrayList<Location>();
+		isSelected = false;
+		hasMoved = false;
+		isProtected = false;
+		protectedPieces = new ArrayList<Piece>();
+		protecting = new ArrayList<Piece>();
+	}
+	
+	public Piece(Piece p){
+		type = p.getType();
+		color = p.getColor();
+		moveLoc = p.getMoveLoc();
+		isSelected = p.isSelected();
+		hasMoved = p.hasMoved();
+		
+		Team opColor = Team.BLACK;
+		
+		if(color == Team.BLACK)
+			opColor = Team.WHITE;
+		
+		if(p.isProtected(color) || p.isProtected(opColor))
+			isProtected = true;
+		else
+			isProtected = false;
+		
+		protectedPieces = p.getProtectedPieces();
+		protecting = p.getProtecting();
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public ArrayList<Location> getMoveLoc() {
+		return moveLoc;
+	}
+
+	public void addMoveLoc(Location moveLoc) {
+		this.moveLoc.add(moveLoc);
+	}
+	
+	public boolean canMoveTo(int r, int c){
+		boolean flag = false;
+		
+		for(Location l : moveLoc)
+			if(l.getRow() == r && l.getCol() == c)
+				flag = true;
+		
+		return flag;
+	}
+
+	public Team getColor() {
+		return color;
+	}
+
+	public void setColor(Team color) {
+		this.color = color;
+	}
+
+	public boolean isSelected() {
+		return isSelected;
+	}
+
+	public void setSelected(boolean b) {
+		isSelected = b;
+	}
+
+	public boolean hasMoved() {
+		return hasMoved;
+	}
+
+	public void setHasMoved(boolean hasMoved) {
+		this.hasMoved = hasMoved;
+	}
+	
+	public boolean isProtected(Team c){
+		boolean flag = false;
+		
+		for(Piece p : protectedPieces)
+			if(p.getColor() == c)
+				flag = true;
+		
+		return isProtected && flag;
+	}
+	
+	public boolean isProtected(Type c){
+		boolean flag = false;
+		
+		for(Piece p : protectedPieces)
+			if(p.getType() == c)
+				flag = true;
+		
+		return isProtected && flag;
+	}
+	
+	public boolean isProtecting(Team t){
+		boolean flag = false;
+		
+		for(Piece p : protecting)
+			if(p.getColor() == t)
+				flag = true;
+		
+		return truel
+	}
+	
+	public void setProtected(boolean b, Piece p){
+		isProtected = b;
+		protectedPieces.add(p);
+		
+		if(!b)
+			protectedPieces = new ArrayList<Piece>();
+	}
+	
+	public ArrayList<Piece> getProtectedPieces(){
+		return protectedPieces;
+	}
+	
+	/**
+	 * @param t the team that is protecting this piece
+	 * @return the amount of pieces protecting this piece on team t
+	 */
+	
+	public int amountProtect(Team t){
+		int n = 0;
+		
+		for(Piece p : protectedPieces)
+			if(p.getColor() == t)
+				n++;
+		
+		return n;
+	}
+	
+	/**
+	 * 
+	 * @param t the team that is protecting this piece
+	 * @return the value of all pieces that might die on the team t
+	 */
+	
+	public int valueProtect(Team t){
+		int value = 0;
+		
+		ArrayList<Piece> pieces = new ArrayList<Piece>();
+		
+		for(Piece p : protectedPieces)
+			if(p.getColor() == t)
+				pieces.add(p);
+		
+		for(int i = 0; i < pieces.size() - 1; i++){
+			int min = i;
+			for(int j = i + 1; j < pieces.size(); j++){
+				if(pieces.get(j).getType().getValue() < pieces.get(min).getType().getValue())
+					min = j;
+			} 
+			
+			Piece temp = pieces.get(i);
+			pieces.set(i, pieces.get(min));
+			pieces.set(min, temp);
+		}
+		
+		for(int k = 0; k < pieces.size() - 1; k++)
+			value += pieces.get(k).getType().getValue();
+		
+		return value;
+	}
+	
+	public void removeLocations(){
+		moveLoc = new ArrayList<Location>();
+	}
+	
+	public String toString(){
+		return color + " " + type;
+	}
+}

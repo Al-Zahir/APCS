@@ -3,10 +3,7 @@ package com.Zeditude.APCompFinal;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
+import android.os.Handler;
 
 /**
  * @author Al-Zahir Rahemtulla
@@ -20,19 +17,16 @@ public class Splash extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.splash);
 		
-		hold();
-	}
-	
-	/**
-	 * Will wait some time before loading the game
-	 */
-	
-	public void hold(){
-		try{
-			//Thread.sleep(3000);
-			startActivity(new Intent("com.Zeditude.APCompFinal.MAIN"));
-		}catch(Exception e){
-			hold();
-		}
+		new Handler().postDelayed(new Runnable(){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Intent mainIntent = new Intent(Splash.this, Main.class);
+				Splash.this.startActivity(mainIntent);
+				Splash.this.finish();
+			}
+			
+		}, 2000);
 	}
 }

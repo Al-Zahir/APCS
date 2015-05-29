@@ -9,6 +9,7 @@ public class Piece implements Cloneable{
 	private boolean hasMoved;
 	private boolean isProtected;
 	private ArrayList<Piece> protectedPieces;
+	private ArrayList<Piece> protecting;
 
 	public Piece() {
 		type = Type.BLANK;
@@ -18,6 +19,7 @@ public class Piece implements Cloneable{
 		hasMoved = false;
 		isProtected = false;
 		protectedPieces = new ArrayList<Piece>();
+		protecting = new ArrayList<Piece>();
 	}
 
 	public Piece(Type t, Team c) {
@@ -28,6 +30,7 @@ public class Piece implements Cloneable{
 		hasMoved = false;
 		isProtected = false;
 		protectedPieces = new ArrayList<Piece>();
+		protecting = new ArrayList<Piece>();
 	}
 	
 	public Piece(Piece p){
@@ -48,6 +51,7 @@ public class Piece implements Cloneable{
 			isProtected = false;
 		
 		protectedPieces = p.getProtectedPieces();
+		protecting = p.getProtecting();
 	}
 
 	public Type getType() {
@@ -120,16 +124,51 @@ public class Piece implements Cloneable{
 		return isProtected && flag;
 	}
 	
+	public boolean isProtecting(Team t){
+		boolean flag = false;
+		
+		for(Piece p : protecting)
+			if(p.getColor() == t)
+				flag = true;
+		
+		return true;
+	}
+	
+	public boolean isProtecting(Piece t){
+		boolean flag = false;
+		
+		for(Piece p : protecting)
+			if(p == t)
+				flag = true;
+		
+		return true;
+	}
+	
 	public void setProtected(boolean b, Piece p){
 		isProtected = b;
 		protectedPieces.add(p);
+		p.setProtecting(true, this);
+		
+		if(!b){
+			for(Piece t : protectedPieces)
+				t.setProtecting(false, new Piece());
+			protectedPieces = new ArrayList<Piece>();
+		}
+	}
+	
+	public void setProtecting(boolean b, Piece p){
+		protecting.add(p);
 		
 		if(!b)
-			protectedPieces = new ArrayList<Piece>();
+			protecting = new ArrayList<Piece>();
 	}
 	
 	public ArrayList<Piece> getProtectedPieces(){
 		return protectedPieces;
+	}
+	
+	public ArrayList<Piece> getProtecting(){
+		return protecting;
 	}
 	
 	/**

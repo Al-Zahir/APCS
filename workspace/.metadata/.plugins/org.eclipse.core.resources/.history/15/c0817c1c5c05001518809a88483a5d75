@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent">
+    
+	<GridView 
+	    android:id="@+id/gridView1"
+	    android:numColumns="8"
+	    android:layout_gravity="center"
+	    android:columnWidth="100dp"
+	    android:stretchMode="columnWidth"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:background="@color/white" >
+	 
+	</GridView>
+</LinearLayout>
+
+<animation-list android:id="@+id/loading" android:oneshot="false">
+	<item android:drawable="@drawable/frame01" android:duration="50" />
+	<item android:drawable="@drawable/frame02" android:duration="50" />
+	<item android:drawable="@drawable/frame03" android:duration="50" />
+	<item android:drawable="@drawable/frame04" android:duration="50" />
+	<item android:drawable="@drawable/frame05" android:duration="50" />
+	<item android:drawable="@drawable/frame06" android:duration="50" />
+	<item android:drawable="@drawable/frame07" android:duration="50" />
+	<item android:drawable="@drawable/frame08" android:duration="50" />
+	<item android:drawable="@drawable/frame09" android:duration="50" />
+	<item android:drawable="@drawable/frame10" android:duration="50" />
+	<item android:drawable="@drawable/frame11" android:duration="50" />
+	</animation-list>

@@ -10,10 +10,12 @@ public class Board implements Cloneable {
 	private Piece[][] board;
 	private Team turn;
 	private AI ai;
+	private boolean isAi;
 
-	public Board(Context con, int rows, int cols) {
+	public Board(Context con, int rows, int cols, boolean b) {
 		board = new Piece[rows][cols];
 		context = con;
+		isAi = b;
 
 		for (int i = 0; i < board.length; i++)
 			for (int j = 0; j < board[i].length; j++)
@@ -49,9 +51,11 @@ public class Board implements Cloneable {
 		setProtections();
 		setLocations();
 
-		nextTurn();
-		ai = new AI(this, turn);
-		nextTurn();
+		if(isAi){
+			nextTurn();
+			ai = new AI(this, turn);
+			nextTurn();
+		}
 	}
 
 	public Board(Piece[][] b, Team t) {

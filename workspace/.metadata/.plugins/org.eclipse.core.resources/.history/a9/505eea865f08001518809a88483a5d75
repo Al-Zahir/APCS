@@ -1,0 +1,36 @@
+package com.Zeditude.APCompFinal;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
+public class Menu extends Activity{
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.menu);
+		
+		Button singP = (Button)findViewById(R.id.singlePlayer);
+		Button multP = (Button)findViewById(R.id.multiPlayer);
+		
+		final Bundle basket = new Bundle();
+		
+		singP.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+            	basket.putBoolean("AI", true);
+            }
+        });
+		
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+	}
+
+}

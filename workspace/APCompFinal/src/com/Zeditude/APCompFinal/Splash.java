@@ -22,7 +22,7 @@ public class Splash extends Activity {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				Intent mainIntent = new Intent(Splash.this, Main.class);
+				Intent mainIntent = new Intent(Splash.this, Menu.class);
 				Splash.this.startActivity(mainIntent);
 				Splash.this.finish();
 			}

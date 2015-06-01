@@ -3,10 +3,6 @@ package com.Zeditude.APCompFinal;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.graphics.drawable.AnimationDrawable;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 public class AI {
 	public List<Node> start;
 	int maxType;
